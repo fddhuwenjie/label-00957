@@ -1,0 +1,31 @@
+# ThinkPHP
+/runtime/
+/vendor/
+/.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+/logs/
+
+# Cache
+/cache/
+
+# Upload files
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+# Node
+node_modules/
+
+# Docker
+.docker/

@@ -1,0 +1,131 @@
+/**
+ * 首页样式
+ */
+
+/* 轮播图 */
+.banner-section {
+    padding: var(--spacing-lg) 0;
+}
+
+.banner-swiper {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+}
+
+.swiper-wrapper {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.swiper-slide {
+    flex-shrink: 0;
+    width: 100%;
+    transition: transform 0.5s ease;
+}
+
+.banner-item {
+    height: 320px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-2xl);
+    color: white;
+}
+
+.banner-content h2 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-sm);
+}
+
+.banner-content p {
+    font-size: var(--font-size-lg);
+    opacity: 0.9;
+    margin-bottom: var(--spacing-lg);
+}
+
+/* 分类导航 */
+.category-section {
+    padding: var(--spacing-lg) 0;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-lg);
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+.category-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    color: var(--primary-color);
+}
+
+.category-icon {
+    font-size: 32px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.category-name {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+/* 排行榜样式 */
+.ranking-list .music-list-rank {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.ranking-list .music-list-rank.top {
+    background: var(--primary-color);
+    color: white;
+    border-radius: var(--radius-sm);
+}
+
+@media (max-width: 767px) {
+    .banner-item {
+        height: 200px;
+        padding: var(--spacing-lg);
+    }
+
+    .banner-content h2 {
+        font-size: var(--font-size-xl);
+    }
+
+    .banner-content p {
+        font-size: var(--font-size-sm);
+    }
+
+    .category-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .category-item {
+        padding: var(--spacing-md);
+    }
+
+    .category-icon {
+        font-size: 24px;
+    }
+}

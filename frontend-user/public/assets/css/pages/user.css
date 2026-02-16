@@ -1,0 +1,122 @@
+/**
+ * 用户中心样式
+ */
+.page-user {
+    padding: var(--spacing-lg) 0;
+}
+
+.user-card {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-lg);
+}
+
+.user-card-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+}
+
+.user-card-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    padding-top: 80px;
+    background: var(--bg-primary);
+}
+
+.user-card-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 4px solid var(--bg-primary);
+    object-fit: cover;
+    margin-top: -40px;
+}
+
+.user-card-info {
+    flex: 1;
+}
+
+.user-card-name {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+}
+
+.user-card-email {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+}
+
+/* 菜单 */
+.user-menu {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: var(--spacing-lg);
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-light);
+    transition: background var(--transition-fast);
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-item:hover {
+    background: var(--bg-secondary);
+}
+
+.menu-item.active {
+    background: var(--primary-bg);
+    color: var(--primary-color);
+}
+
+.menu-item.active svg {
+    fill: var(--primary-color);
+}
+
+.menu-item svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--text-muted);
+}
+
+.menu-item span:first-of-type {
+    flex: 1;
+}
+
+.menu-count {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+}
+
+/* 内容区 */
+.user-content {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.content-header {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.content-header h3 {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+}

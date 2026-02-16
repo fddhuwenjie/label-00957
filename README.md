@@ -1,93 +1,72 @@
-# label-00957
+# 多端合一响应式音乐发行平台
 
+## How to Run
 
+```bash
+# 1. 克隆项目后进入目录
+cd music-platform
 
-## Getting started
+# 2. 启动服务
+docker-compose up -d --build
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-* [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://gitlab.jzxhnh.com/prompt2repo/label-00957.git
-git branch -M main
-git push -uf origin main
+# 3. 访问地址
+# 前端用户端: http://localhost:8081
+# 后台管理端: http://localhost:8082
 ```
 
-## Integrate with your tools
+## Services
 
-* [Set up project integrations](https://gitlab.jzxhnh.com/prompt2repo/label-00957/-/settings/integrations)
+| 服务 | 端口 | 说明 |
+|------|------|------|
+| frontend-user | 8081 | 用户端（多端合一响应式） |
+| frontend-admin | 8082 | 后台管理系统 |
+| MySQL | 3307 | 数据库服务 |
 
-## Collaborate with your team
+## 测试账号
 
-* [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+### 后台管理系统
+- 管理员账号: `admin`
+- 管理员密码: `admin123`
 
-## Test and Deploy
+### 用户端
+- 测试用户: `user@test.com`
+- 测试密码: `admin123`
 
-Use the built-in continuous integration in GitLab.
+## 题目内容
 
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+使用ThinkPHP框架开发一套功能完善的多端合一响应式音乐发行平台网站。该平台需实现对PC端、手机端、平板端、微信公众号、微信小程序及H5等多终端的自适应浏览布局，确保在不同设备上均能提供良好的用户体验。 技术实现要求： 1. 采用响应式Web设计，使用CSS媒体查询、Flexbox或Grid布局实现多终端自适应 2. 实现动态资源加载机制，通过文件引入等动态写法保护页面源码，特别是动态加载CSS和JavaScript文件 3. 所有页面文件必须使用.php格式开发 4. 研究并应用多端合一网站的最佳实践，包括但不限于设备检测、视图适配和交互优化 安全与性能要求： 1. 确保动态资源加载机制能够有效防止用户直接查看核心页面源码 2. 优化资源加载性能，实现按需加载和资源缓存策略 3. 保证在各种网络环境下均有良好的加载速度和运行性能 兼容性要求： 1. 兼容主流现代浏览器（Chrome、Firefox、Safari、Edge最新版本） 2. 适配主流移动设备屏幕尺寸和分辨率 3. 确保在微信内置浏览器及小程序环境中正常运行 4.网络搜索多端合一写法 请在开发过程中遵循ThinkPHP框架的最佳实践，实现代码模块化、可维护性和可扩展性。
 
-***
+---
 
-# Editing this README
+## 项目简介
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+本项目是一个基于 ThinkPHP 8 框架开发的多端合一响应式音乐发行平台，支持 PC端、手机端、平板端、微信公众号、微信小程序及 H5 等多终端自适应浏览。
 
-## Suggestions for a good README
+### 核心特性
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+- **多端合一响应式设计**: 使用 CSS 媒体查询、Flexbox/Grid 布局实现全终端自适应
+- **动态资源加载**: 通过 PHP 动态引入机制保护源码，实现按需加载
+- **设备智能检测**: 自动识别访问设备类型，提供最优化的视图体验
+- **微信生态兼容**: 完美支持微信内置浏览器和小程序 WebView
 
-## Name
-Choose a self-explaining name for your project.
+### 功能模块
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+1. **用户端**
+   - 首页展示（轮播、推荐、排行榜）
+   - 音乐浏览与搜索
+   - 音乐播放器
+   - 用户注册/登录
+   - 个人中心
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+2. **后台管理**
+   - 仪表盘数据统计
+   - 音乐管理（CRUD）
+   - 用户管理
+   - 分类管理
+   - 系统设置
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+### 技术架构
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- **后端**: ThinkPHP 8 + MySQL 8.0
+- **前端**: 原生 PHP 模板 + 响应式 CSS + Vanilla JS
+- **容器化**: Docker + Docker Compose

@@ -1,0 +1,276 @@
+/**
+ * 响应式样式
+ * 多端合一自适应布局
+ */
+
+/* ========== 平板端 (768px - 1023px) ========== */
+@media (min-width: 768px) and (max-width: 1023px) {
+    :root {
+        --header-height: 60px;
+    }
+
+    .container {
+        padding: 0 var(--spacing-lg);
+    }
+
+    .music-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .banner-item {
+        height: 280px;
+    }
+
+    .player-progress {
+        display: none;
+    }
+}
+
+/* ========== 手机端 (< 768px) ========== */
+@media (max-width: 767px) {
+    :root {
+        --header-height: 56px;
+        --spacing-lg: 16px;
+        --spacing-xl: 24px;
+    }
+
+    .container {
+        padding: 0 var(--spacing-md);
+    }
+
+    /* 头部 */
+    .header-inner {
+        gap: var(--spacing-sm);
+    }
+
+    .logo-text {
+        display: none;
+    }
+
+    .nav-menu {
+        display: none;
+    }
+
+    .search-box {
+        flex: 1;
+        max-width: none;
+    }
+
+    .user-area .user-guest {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    /* 轮播 */
+    .banner-item {
+        height: 180px;
+        border-radius: var(--radius-md);
+    }
+
+    .banner-content h2 {
+        font-size: var(--font-size-xl);
+    }
+
+    .banner-content p {
+        font-size: var(--font-size-sm);
+    }
+
+    /* 音乐网格 */
+    .music-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    .music-card-info {
+        padding: var(--spacing-sm);
+    }
+
+    .music-card-title {
+        font-size: var(--font-size-sm);
+    }
+
+    /* 播放器 */
+    .player-inner {
+        padding: 0 var(--spacing-sm);
+    }
+
+    .player-info {
+        min-width: auto;
+        flex: 1;
+    }
+
+    .player-cover {
+        width: 40px;
+        height: 40px;
+    }
+
+    .player-progress,
+    .player-extra {
+        display: none;
+    }
+
+    .player-controls {
+        flex-shrink: 0;
+    }
+
+    .player-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .player-btn-play {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* 区块 */
+    .section {
+        padding: var(--spacing-lg) 0;
+    }
+
+    .section-title {
+        font-size: var(--font-size-lg);
+    }
+
+    /* 排行榜 */
+    .ranking-col-duration {
+        display: none;
+    }
+
+    /* 认证页 */
+    .auth-container {
+        padding: var(--spacing-md);
+    }
+
+    .auth-card {
+        padding: var(--spacing-lg);
+    }
+
+    .auth-header h1 {
+        font-size: var(--font-size-xl);
+    }
+
+    /* 用户页 */
+    .user-card {
+        margin: 0 calc(var(--spacing-md) * -1);
+        border-radius: 0;
+    }
+
+    .user-menu {
+        margin-top: var(--spacing-md);
+    }
+}
+
+/* ========== 小屏手机 (< 375px) ========== */
+@media (max-width: 374px) {
+    .music-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .music-card {
+        display: flex;
+    }
+
+    .music-card-cover {
+        width: 80px;
+        padding-top: 0;
+        height: 80px;
+        flex-shrink: 0;
+    }
+
+    .music-card-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+/* ========== 大屏 (>= 1280px) ========== */
+@media (min-width: 1280px) {
+    .music-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    .banner-item {
+        height: 400px;
+    }
+}
+
+/* ========== 微信环境适配 ========== */
+.device-wechat .header,
+.device-miniprogram .header {
+    padding-top: env(safe-area-inset-top);
+}
+
+.device-wechat .tabbar,
+.device-miniprogram .tabbar {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ========== 安全区域 ========== */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .tabbar {
+        padding-bottom: env(safe-area-inset-bottom);
+        height: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+    }
+
+    .device-mobile .main-content,
+    .device-tablet .main-content {
+        padding-bottom: calc(var(--player-height) + var(--tabbar-height) + env(safe-area-inset-bottom) + var(--spacing-md));
+    }
+}
+
+/* ========== 横屏适配 ========== */
+@media (orientation: landscape) and (max-height: 500px) {
+    .header {
+        height: 48px;
+    }
+
+    .main-content {
+        padding-top: 48px;
+    }
+
+    .tabbar {
+        height: 48px;
+    }
+
+    .banner-item {
+        height: 200px;
+    }
+}
+
+/* ========== 打印样式 ========== */
+@media print {
+    .header,
+    .tabbar,
+    .player {
+        display: none;
+    }
+
+    .main-content {
+        padding: 0;
+    }
+}
+
+/* ========== 高对比度模式 ========== */
+@media (prefers-contrast: high) {
+    :root {
+        --border-color: #000;
+        --text-muted: #555;
+    }
+}
+
+/* ========== 减少动画 ========== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
