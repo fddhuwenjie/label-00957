@@ -99,17 +99,40 @@
     text-decoration: none;
 }
 
+.user-guest {
+    display: none;
+}
+
 .user-logged:hover {
     color: var(--primary-color);
+}
+
+.user-info-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+    gap: 2px;
+    max-width: 120px;
+    height: 36px;
 }
 
 .user-name {
     font-size: var(--font-size-sm);
     font-weight: 500;
-    max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 1.3;
+}
+
+.user-email {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.3;
 }
 
 .user-avatar {
@@ -117,6 +140,9 @@
     height: 36px;
     border-radius: 50%;
     object-fit: cover;
+    flex-shrink: 0;
+    align-self: center;
+    display: block;
 }
 
 .menu-toggle {
@@ -274,6 +300,7 @@
     z-index: var(--z-sticky);
     transform: translateY(100%);
     transition: transform var(--transition-base);
+    overflow: visible;
 }
 
 .player.active {
@@ -282,7 +309,7 @@
 
 .device-mobile .player,
 .device-tablet .player {
-    bottom: var(--tabbar-height);
+    bottom: 0;
 }
 
 .player-inner {
@@ -342,6 +369,7 @@
     border-radius: 2px;
     cursor: pointer;
     position: relative;
+    user-select: none;
 }
 
 .progress-played {
@@ -364,8 +392,13 @@
     transition: opacity var(--transition-fast);
 }
 
-.progress-bar:hover .progress-handle {
+.progress-bar:hover .progress-handle,
+.progress-bar.dragging .progress-handle {
     opacity: 1;
+}
+
+.progress-bar.dragging .progress-played {
+    transition: none;
 }
 
 .player-controls {
@@ -424,32 +457,79 @@
     align-items: center;
 }
 
-.volume-slider {
-    width: 0;
-    overflow: hidden;
-    transition: width var(--transition-fast);
+/* 音量弹窗：fixed 定位，由 JS 计算位置，避免 player transform 的 stacking context 干扰 */
+.volume-popup {
+    position: fixed;
+    width: 32px;
+    height: 108px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-fast), visibility var(--transition-fast);
+    z-index: calc(var(--z-fixed) + 10);
+    pointer-events: none;
 }
 
-.volume-control:hover .volume-slider {
-    width: 80px;
-    margin-left: var(--spacing-sm);
+.volume-popup.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
-.volume-slider input {
-    width: 80px;
+/* 下方小箭头，指向喇叭按钮 */
+.volume-popup::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid var(--border-color);
+    pointer-events: none;
+}
+
+/* 竖向滑条：绝对居中后旋转 */
+.volume-popup input {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 76px;
     height: 4px;
+    margin: 0;
+    padding: 0;
+    transform: translate(-50%, -50%) rotate(-90deg);
     -webkit-appearance: none;
+    appearance: none;
     background: var(--bg-tertiary);
     border-radius: 2px;
+    cursor: pointer;
+    outline: none;
 }
 
-.volume-slider input::-webkit-slider-thumb {
+.volume-popup input::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     background: var(--primary-color);
     border-radius: 50%;
     cursor: pointer;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.volume-popup input::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
 }
 
 /* ========== 音乐卡片 ========== */
@@ -629,6 +709,139 @@
     width: 18px;
     height: 18px;
     fill: currentColor;
+}
+
+/* ========== 播放列表弹窗 ========== */
+.playlist-modal {
+    position: fixed;
+    bottom: var(--player-height);
+    left: 0;
+    right: 0;
+    height: 60vh;
+    max-height: 500px;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+    box-shadow: var(--shadow-xl);
+    z-index: var(--z-sticky);
+    transform: translateY(100%);
+    visibility: hidden;
+    transition: transform var(--transition-base), visibility var(--transition-base);
+}
+
+.playlist-modal.active {
+    transform: translateY(0);
+    visibility: visible;
+}
+
+.device-mobile .playlist-modal,
+.device-tablet .playlist-modal {
+    bottom: var(--player-height);
+}
+
+.playlist-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: var(--spacing-md) var(--spacing-md);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.playlist-header h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+}
+
+.playlist-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--text-muted);
+    border-radius: 50%;
+    transition: all var(--transition-fast);
+}
+
+.playlist-close:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.playlist-content {
+    width: 100%;
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+    height: calc(100% - 56px);
+    overflow-y: auto;
+}
+
+.playlist-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    gap: var(--spacing-md);
+    border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.playlist-item:last-child {
+    border-bottom: none;
+}
+
+.playlist-item:hover {
+    background: var(--bg-secondary);
+}
+
+.playlist-item.playing {
+    color: var(--primary-color);
+}
+
+.playlist-item-index {
+    width: 24px;
+    text-align: center;
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.playlist-item.playing .playlist-item-index {
+    color: var(--primary-color);
+}
+
+.playlist-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.playlist-item-title {
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.playlist-item-artist {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.playlist-item-duration {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.playlist-empty {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: var(--text-muted);
 }
 
 /* ========== Toast ========== */

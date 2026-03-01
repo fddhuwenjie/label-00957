@@ -1,13 +1,13 @@
 <?php return array(
     'root' => array(
         'name' => 'music-platform/frontend-user',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '8acf4bbaa358e51b0279b7bc7e8138a17ec7aef0',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'dev' => false,
+        'dev' => true,
     ),
     'versions' => array(
         'firebase/php-jwt' => array(
@@ -20,9 +20,9 @@
             'dev_requirement' => false,
         ),
         'music-platform/frontend-user' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '8acf4bbaa358e51b0279b7bc7e8138a17ec7aef0',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

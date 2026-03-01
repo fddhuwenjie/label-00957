@@ -1,4 +1,4 @@
-<?php /*a:5:{s:38:"/var/www/html/app/view/index/index.php";i:1771057664;s:38:"/var/www/html/app/view/layout/base.php";i:1771172592;s:40:"/var/www/html/app/view/layout/header.php";i:1771172667;s:40:"/var/www/html/app/view/layout/tabbar.php";i:1771172018;s:44:"/var/www/html/app/view/components/player.php";i:1771172130;}*/ ?>
+<?php /*a:5:{s:38:"/var/www/html/app/view/index/index.php";i:1771209707;s:38:"/var/www/html/app/view/layout/base.php";i:1771209707;s:40:"/var/www/html/app/view/layout/header.php";i:1772269466;s:40:"/var/www/html/app/view/layout/tabbar.php";i:1772268642;s:44:"/var/www/html/app/view/components/player.php";i:1772271331;}*/ ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -57,7 +57,10 @@
         <div class="user-area">
             <a href="/user" class="user-logged">
                 <img src="/assets/images/avatar-default.svg" alt="头像" class="user-avatar" id="userAvatar">
-                <span class="user-name pc-only" id="userName"></span>
+                <div class="user-info-text pc-only">
+                    <span class="user-name" id="userName"></span>
+                    <span class="user-email" id="userEmail"></span>
+                </div>
             </a>
             <div class="user-guest">
                 <a href="/login" class="btn btn-text">登录</a>
@@ -194,8 +197,8 @@
         </main>
         
         <!-- 底部导航（移动端） -->
-        <!-- 移动端底部导航 -->
-<nav class="tabbar mobile-only">
+        <!-- 移动端底部导航（已隐藏） -->
+<nav class="tabbar mobile-only" style="display:none!important">
     <a href="/" class="tabbar-item <?php echo $pageId=='home' ? 'active' : ''; ?>">
         <svg class="tabbar-icon" viewBox="0 0 24 24" fill="currentColor">
             <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
@@ -265,13 +268,10 @@
             <button class="player-btn" id="btnFavorite" title="收藏">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"/></svg>
             </button>
-            <div class="volume-control">
+            <div class="volume-control" id="volumeControl">
                 <button class="player-btn" id="btnVolume" title="音量">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                 </button>
-                <div class="volume-slider">
-                    <input type="range" min="0" max="100" value="80" id="volumeSlider">
-                </div>
             </div>
             <button class="player-btn" id="btnPlaylist" title="播放列表">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
@@ -281,6 +281,11 @@
 
     <!-- 音频元素 -->
     <audio id="audioElement" preload="metadata"></audio>
+</div>
+
+<!-- 音量弹窗（移出 .player，避免 transform stacking context 干扰定位） -->
+<div class="volume-popup" id="volumePopup">
+    <input type="range" min="0" max="100" value="80" id="volumeSlider">
 </div>
 
 <!-- 播放列表弹窗 -->

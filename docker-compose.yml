@@ -11,7 +11,7 @@ services:
     volumes:
       - ./frontend-user:/var/www/html
       - user_vendor:/var/www/html/vendor
-      - user_uploads:/var/www/html/public/uploads
+      - shared_uploads:/var/www/html/public/uploads
     depends_on:
       mysql:
         condition: service_healthy
@@ -21,6 +21,7 @@ services:
       - DB_DATABASE=music_platform
       - DB_USERNAME=root
       - DB_PASSWORD=root123
+      - ADMIN_URL=http://localhost:8082
     networks:
       - music-network
     restart: unless-stopped
@@ -35,7 +36,7 @@ services:
     volumes:
       - ./frontend-admin:/var/www/html
       - admin_vendor:/var/www/html/vendor
-      - admin_uploads:/var/www/html/public/uploads
+      - shared_uploads:/var/www/html/public/uploads
     depends_on:
       mysql:
         condition: service_healthy
@@ -79,7 +80,6 @@ networks:
 
 volumes:
   mysql_data:
-  user_uploads:
-  admin_uploads:
+  shared_uploads:
   user_vendor:
   admin_vendor:

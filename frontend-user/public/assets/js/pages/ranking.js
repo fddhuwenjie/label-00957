@@ -9,7 +9,12 @@
     // 加载排行榜
     async function loadRanking() {
         Components.loading.show();
+        const startTime = Date.now();
         const res = await Api.music.ranking(currentType, 50);
+        const elapsed = Date.now() - startTime;
+        if (elapsed < 300) {
+            await new Promise(r => setTimeout(r, 300 - elapsed));
+        }
         Components.loading.hide();
 
         if (res.code === 200 && res.data) {

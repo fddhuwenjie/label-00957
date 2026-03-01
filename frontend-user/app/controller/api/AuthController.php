@@ -69,7 +69,14 @@ class AuthController extends BaseController
      */
     public function login()
     {
-        $data = input('post.');
+        // 兼容 JSON 请求体（param 已合并 post/put）
+        $data = request()->param();
+        if (empty($data['email']) && empty($data['password'])) {
+            $raw = json_decode(request()->getContent(), true);
+            if (is_array($raw)) {
+                $data = $raw;
+            }
+        }
         
         // 兼容 username 字段名
         if (!isset($data['email']) && isset($data['username'])) {
@@ -85,7 +92,7 @@ class AuthController extends BaseController
         }
 
         // 尝试解密密码（如果解密失败则认为是明文密码）
-        $password = $data['password'];
+        $password = (string) ($data['password'] ?? '');
         try {
             $decrypted = CryptoService::decrypt($data['password']);
             $password = $decrypted;
@@ -94,9 +101,9 @@ class AuthController extends BaseController
             Log::warning('密码解密失败，使用明文密码', ['email' => $data['email']]);
         }
 
-        $user = User::where('email', $data['email'])->find();
+        $user = User::where('email', trim($data['email']))->find();
         
-        if (!$user || !$user->verifyPassword($password)) {
+        if (!$user || !$user->verifyPassword((string) $password)) {
             return error('邮箱或密码错误', 401);
         }
 

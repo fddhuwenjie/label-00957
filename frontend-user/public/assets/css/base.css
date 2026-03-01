@@ -69,13 +69,23 @@ ul, ol {
 .main-content {
     min-height: calc(100vh - var(--header-height));
     padding-top: var(--header-height);
+    padding-bottom: var(--spacing-md);
+}
+
+/* 移动端底部导航已隐藏，无需额外占位 */
+.device-mobile .main-content,
+.device-tablet .main-content {
+    padding-bottom: var(--spacing-md);
+}
+
+/* 播放器激活时，为主内容区预留播放器高度 */
+.player-active .main-content {
     padding-bottom: calc(var(--player-height) + var(--spacing-md));
 }
 
-/* 移动端底部导航占位 */
-.device-mobile .main-content,
-.device-tablet .main-content {
-    padding-bottom: calc(var(--player-height) + var(--tabbar-height) + var(--spacing-md));
+.player-active.device-mobile .main-content,
+.player-active.device-tablet .main-content {
+    padding-bottom: calc(var(--player-height) + var(--spacing-md));
 }
 
 /* 按钮 */
@@ -281,10 +291,7 @@ ul, ol {
     .mobile-only {
         display: block !important;
     }
-    /* 底部导航栏需要保持 flex 布局 */
-    .tabbar.mobile-only {
-        display: flex !important;
-    }
+    /* tabbar 已隐藏，不再强制显示 */
 }
 
 /* 滚动条 */

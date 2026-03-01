@@ -220,7 +220,12 @@
 
     .device-mobile .main-content,
     .device-tablet .main-content {
-        padding-bottom: calc(var(--player-height) + var(--tabbar-height) + env(safe-area-inset-bottom) + var(--spacing-md));
+        padding-bottom: calc(env(safe-area-inset-bottom) + var(--spacing-md));
+    }
+
+    .player-active.device-mobile .main-content,
+    .player-active.device-tablet .main-content {
+        padding-bottom: calc(var(--player-height) + env(safe-area-inset-bottom) + var(--spacing-md));
     }
 }
 

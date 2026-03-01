@@ -45,6 +45,7 @@ const Store = {
             const guestEl = document.querySelector('.user-guest');
             const avatarEl = document.getElementById('userAvatar');
             const nameEl = document.getElementById('userName');
+            const emailEl = document.getElementById('userEmail');
             
             // 移动端菜单用户信息
             const mobileUserInfo = document.getElementById('mobileUserInfo');
@@ -59,6 +60,7 @@ const Store = {
                 if (guestEl) guestEl.style.display = 'none';
                 if (avatarEl) avatarEl.src = this._data.avatar || '/assets/images/avatar-default.svg';
                 if (nameEl) nameEl.textContent = this._data.nickname || '用户';
+                if (emailEl) emailEl.textContent = this._data.email || '';
                 // 更新移动端菜单
                 if (mobileUserInfo) mobileUserInfo.href = '/user';
                 if (mobileAvatar) mobileAvatar.src = this._data.avatar || '/assets/images/avatar-default.svg';
@@ -145,5 +147,8 @@ const Store = {
 
 // 初始化
 Store.user.init();
+
+// 立即更新UI，避免登录状态闪烁（scripts在body底部，DOM已就绪）
+Store.user.updateUI();
 
 window.Store = Store;

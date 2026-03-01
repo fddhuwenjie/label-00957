@@ -75,12 +75,22 @@ class CryptoService
         $privateKey = self::getPrivateKey();
         $encrypted = base64_decode($encrypted);
         
+        if ($encrypted === false) {
+            throw new \Exception('Base64解码失败');
+        }
+        
         $decrypted = '';
-        if (openssl_private_decrypt($encrypted, $decrypted, $privateKey)) {
+        // 优先使用 OAEP 填充 + SHA1（与前端 Web Crypto API 匹配）
+        if (openssl_private_decrypt($encrypted, $decrypted, $privateKey, OPENSSL_PKCS1_OAEP_PADDING)) {
             return $decrypted;
         }
         
-        throw new \Exception('解密失败');
+        // 兼容 PKCS1 填充
+        if (openssl_private_decrypt($encrypted, $decrypted, $privateKey, OPENSSL_PKCS1_PADDING)) {
+            return $decrypted;
+        }
+        
+        throw new \Exception('解密失败: ' . openssl_error_string());
     }
 
     /**

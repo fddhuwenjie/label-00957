@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Faded - Alan Walker - 电子音乐波形主题 -->
+  <defs>
+    <linearGradient id="bg6" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#000"/>
+      <stop offset="100%" style="stop-color:#0a1628"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#bg6)"/>
+  <!-- 音频波形 -->
+  <g opacity="0.8">
+    <rect x="15" y="85" width="4" height="30" rx="2" fill="#00d4ff"/>
+    <rect x="23" y="70" width="4" height="60" rx="2" fill="#00d4ff"/>
+    <rect x="31" y="80" width="4" height="40" rx="2" fill="#00d4ff"/>
+    <rect x="39" y="60" width="4" height="80" rx="2" fill="#00d4ff"/>
+    <rect x="47" y="75" width="4" height="50" rx="2" fill="#00d4ff"/>
+    <rect x="55" y="50" width="4" height="100" rx="2" fill="#00d4ff"/>
+    <rect x="63" y="65" width="4" height="70" rx="2" fill="#00d4ff"/>
+    <rect x="71" y="40" width="4" height="120" rx="2" fill="#00d4ff"/>
+    <rect x="79" y="55" width="4" height="90" rx="2" fill="#00d4ff"/>
+    <rect x="87" y="30" width="4" height="140" rx="2" fill="#00d4ff"/>
+    <rect x="95" y="45" width="4" height="110" rx="2" fill="#00d4ff"/>
+    <rect x="103" y="35" width="4" height="130" rx="2" fill="#00d4ff"/>
+    <rect x="111" y="50" width="4" height="100" rx="2" fill="#00d4ff"/>
+    <rect x="119" y="40" width="4" height="120" rx="2" fill="#00d4ff"/>
+    <rect x="127" y="60" width="4" height="80" rx="2" fill="#00d4ff"/>
+    <rect x="135" y="50" width="4" height="100" rx="2" fill="#00d4ff"/>
+    <rect x="143" y="70" width="4" height="60" rx="2" fill="#00d4ff"/>
+    <rect x="151" y="65" width="4" height="70" rx="2" fill="#00d4ff"/>
+    <rect x="159" y="75" width="4" height="50" rx="2" fill="#00d4ff"/>
+    <rect x="167" y="80" width="4" height="40" rx="2" fill="#00d4ff"/>
+    <rect x="175" y="85" width="4" height="30" rx="2" fill="#00d4ff"/>
+    <rect x="183" y="90" width="4" height="20" rx="2" fill="#00d4ff"/>
+  </g>
+  <!-- 光晕效果 -->
+  <circle cx="100" cy="100" r="60" fill="none" stroke="#00d4ff" stroke-width="0.5" opacity="0.2"/>
+  <circle cx="100" cy="100" r="80" fill="none" stroke="#00d4ff" stroke-width="0.3" opacity="0.1"/>
+</svg>

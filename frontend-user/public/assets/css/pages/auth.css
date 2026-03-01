@@ -80,6 +80,19 @@
     font-weight: 500;
 }
 
+/* 登录/注册按钮内的文字 span 与 base.css .btn-text 命名冲突，覆盖修复颜色和 padding */
+.btn-primary .btn-text,
+.btn-primary:hover .btn-text {
+    color: white;
+    padding: 0;
+}
+
+/* 固定按钮高度，防止 text/loading 切换时高度跳变 */
+#loginBtn,
+#registerBtn {
+    min-height: 52px;
+}
+
 /* Loading spinner */
 .spinner {
     width: 20px;

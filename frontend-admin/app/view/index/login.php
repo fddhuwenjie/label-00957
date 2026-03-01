@@ -137,7 +137,6 @@
         </form>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/jsencrypt@3.3.2/bin/jsencrypt.min.js"></script>
     <script>
         let publicKey = null;
         
@@ -155,14 +154,32 @@
         }
         fetchPublicKey();
 
-        // RSA 加密密码
-        function encryptPassword(password) {
+        // 使用原生 Web Crypto API 进行 RSA 加密
+        async function encryptPassword(password) {
             if (!publicKey) {
                 throw new Error('公钥未加载');
             }
-            const encrypt = new JSEncrypt();
-            encrypt.setPublicKey(publicKey);
-            return encrypt.encrypt(password);
+            const pemHeader = '-----BEGIN PUBLIC KEY-----';
+            const pemFooter = '-----END PUBLIC KEY-----';
+            const pemContents = publicKey.replace(pemHeader, '').replace(pemFooter, '').replace(/\s/g, '');
+            const binaryDer = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
+
+            const cryptoKey = await window.crypto.subtle.importKey(
+                'spki',
+                binaryDer.buffer,
+                { name: 'RSA-OAEP', hash: 'SHA-1' },
+                false,
+                ['encrypt']
+            );
+
+            const encoded = new TextEncoder().encode(password);
+            const encrypted = await window.crypto.subtle.encrypt(
+                { name: 'RSA-OAEP' },
+                cryptoKey,
+                encoded
+            );
+
+            return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
         }
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -182,7 +199,7 @@
                 if (!publicKey) {
                     await fetchPublicKey();
                 }
-                const encryptedPassword = encryptPassword(password);
+                const encryptedPassword = await encryptPassword(password);
                 if (!encryptedPassword) {
                     throw new Error('密码加密失败');
                 }

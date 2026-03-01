@@ -33,11 +33,16 @@
         }
 
         Components.loading.show();
+        const startTime = Date.now();
         const res = await Api.music.list({
             page: currentPage,
             limit: 20,
             category_id: currentCategory
         });
+        const elapsed = Date.now() - startTime;
+        if (elapsed < 300) {
+            await new Promise(r => setTimeout(r, 300 - elapsed));
+        }
         Components.loading.hide();
         isLoading = false;
 
@@ -52,6 +57,8 @@
             if (data.length > 0) {
                 list.innerHTML += data.map(m => Components.renderMusicListItem(m)).join('');
                 Store.player.setPlaylist(data);
+            } else if (reset) {
+                list.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg><p>暂无相关音乐</p></div>';
             }
 
             hasMore = data.length >= 20;

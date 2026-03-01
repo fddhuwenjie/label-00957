@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- 成都 - 赵雷 - 民谣小酒馆主题 -->
+  <defs>
+    <linearGradient id="sky5" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2c3e50"/>
+      <stop offset="100%" style="stop-color:#34495e"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#sky5)"/>
+  <!-- 星星 -->
+  <circle cx="30" cy="20" r="1" fill="#fff" opacity="0.6"/>
+  <circle cx="90" cy="15" r="1.5" fill="#fff" opacity="0.8"/>
+  <circle cx="160" cy="25" r="1" fill="#fff" opacity="0.5"/>
+  <!-- 建筑轮廓 -->
+  <rect x="10" y="90" width="35" height="110" fill="#1a252f"/>
+  <rect x="50" y="70" width="30" height="130" fill="#1c2833"/>
+  <rect x="85" y="80" width="40" height="120" fill="#1a252f"/>
+  <rect x="130" y="65" width="30" height="135" fill="#1c2833"/>
+  <rect x="165" y="85" width="35" height="115" fill="#1a252f"/>
+  <!-- 窗户灯光 -->
+  <rect x="18" y="100" width="8" height="8" rx="1" fill="#f39c12" opacity="0.8"/>
+  <rect x="30" y="115" width="8" height="8" rx="1" fill="#f39c12" opacity="0.6"/>
+  <rect x="58" y="80" width="8" height="8" rx="1" fill="#f39c12" opacity="0.7"/>
+  <rect x="58" y="100" width="8" height="8" rx="1" fill="#f39c12" opacity="0.9"/>
+  <rect x="95" y="90" width="8" height="8" rx="1" fill="#f39c12" opacity="0.8"/>
+  <rect x="110" y="110" width="8" height="8" rx="1" fill="#f39c12" opacity="0.6"/>
+  <rect x="138" y="75" width="8" height="8" rx="1" fill="#f39c12" opacity="0.7"/>
+  <rect x="138" y="95" width="8" height="8" rx="1" fill="#f39c12" opacity="0.9"/>
+  <rect x="175" y="95" width="8" height="8" rx="1" fill="#f39c12" opacity="0.7"/>
+  <!-- 小酒馆招牌 -->
+  <rect x="90" y="155" width="35" height="20" rx="3" fill="#e74c3c" opacity="0.9"/>
+  <text x="107" y="169" font-size="9" fill="#fff" text-anchor="middle" font-family="sans-serif">小酒馆</text>
+  <!-- 门 -->
+  <rect x="100" y="175" width="16" height="25" rx="2" fill="#f39c12" opacity="0.5"/>
+  <!-- 路灯 -->
+  <line x1="70" y1="145" x2="70" y2="200" stroke="#7f8c8d" stroke-width="2"/>
+  <circle cx="70" cy="142" r="5" fill="#f1c40f" opacity="0.8"/>
+  <circle cx="70" cy="142" r="10" fill="#f1c40f" opacity="0.15"/>
+</svg>

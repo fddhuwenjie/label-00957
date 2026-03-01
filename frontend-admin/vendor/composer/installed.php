@@ -3,7 +3,7 @@
         'name' => 'music-platform/frontend-admin',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'f9020ac161b237b035035094799cff51a4400589',
+        'reference' => '8acf4bbaa358e51b0279b7bc7e8138a17ec7aef0',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'music-platform/frontend-admin' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'f9020ac161b237b035035094799cff51a4400589',
+            'reference' => '8acf4bbaa358e51b0279b7bc7e8138a17ec7aef0',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

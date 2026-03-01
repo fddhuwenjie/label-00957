@@ -91,16 +91,18 @@ class AssetController extends BaseController
     }
 
     /**
-     * 简单JS压缩
+     * 简单JS处理（安全模式：只去除BOM和空行，不做破坏JS结构的压缩）
+     * 注意：用正则暴力压缩JS会破坏字符串/模板字面量/正则字面量中的内容，
+     * 例如 `${url}?${query}`、/\s/g、'http://...' 等，导致脚本报错无法执行。
      */
     private function minifyJs(string $content): string
     {
-        // 移除单行注释
-        $content = preg_replace('/\/\/[^\n]*/', '', $content);
-        // 移除多行注释
-        $content = preg_replace('/\/\*[\s\S]*?\*\//', '', $content);
-        // 移除多余空白
-        $content = preg_replace('/\s+/', ' ', $content);
+        // 去除 UTF-8 BOM
+        if (substr($content, 0, 3) === "\xEF\xBB\xBF") {
+            $content = substr($content, 3);
+        }
+        // 只移除完全空白的行，保留代码结构
+        $content = preg_replace('/^\s*[\r\n]/m', '', $content);
         return trim($content);
     }
 

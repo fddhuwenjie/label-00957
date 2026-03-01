@@ -4,6 +4,58 @@
 (function() {
     'use strict';
 
+    // RSA 公钥缓存
+    let publicKey = null;
+
+    // 页面加载时预取公钥
+    async function fetchPublicKey() {
+        try {
+            const res = await fetch('/api/auth/public-key');
+            const data = await res.json();
+            if (data.code === 200) {
+                publicKey = data.data.public_key;
+            }
+        } catch (e) {
+            console.warn('获取公钥失败', e);
+        }
+    }
+    fetchPublicKey();
+
+    // 使用 Web Crypto API 进行 RSA-OAEP 加密（与后台解密方式匹配）
+    async function encryptPassword(password) {
+        if (!publicKey) {
+            await fetchPublicKey();
+        }
+        if (!publicKey) {
+            throw new Error('公钥未加载，无法加密');
+        }
+
+        const pemHeader = '-----BEGIN PUBLIC KEY-----';
+        const pemFooter = '-----END PUBLIC KEY-----';
+        const pemContents = publicKey
+            .replace(pemHeader, '')
+            .replace(pemFooter, '')
+            .replace(/\s/g, '');
+        const binaryDer = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0));
+
+        const cryptoKey = await window.crypto.subtle.importKey(
+            'spki',
+            binaryDer.buffer,
+            { name: 'RSA-OAEP', hash: 'SHA-1' },
+            false,
+            ['encrypt']
+        );
+
+        const encoded = new TextEncoder().encode(password);
+        const encrypted = await window.crypto.subtle.encrypt(
+            { name: 'RSA-OAEP' },
+            cryptoKey,
+            encoded
+        );
+
+        return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+    }
+
     // 登录表单
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
@@ -28,8 +80,7 @@
             btnLoading.style.display = 'inline-flex';
 
             try {
-                // 加密密码
-                const encryptedPassword = await Utils.crypto.encrypt(password);
+                const encryptedPassword = await encryptPassword(password);
                 const res = await Api.auth.login({ email, password: encryptedPassword });
 
                 // 隐藏loading
@@ -44,13 +95,13 @@
                         window.location.href = '/';
                     }, 500);
                 } else {
-                    Components.toast(res.message || '登录失败');
+                    Components.toast(res.message || '登录失败', 4000);
                 }
             } catch (err) {
                 btn.disabled = false;
                 btnText.style.display = 'inline';
                 btnLoading.style.display = 'none';
-                Components.toast('登录失败，请重试');
+                Components.toast('登录失败，请重试', 4000);
             }
         });
     }
@@ -91,8 +142,7 @@
             btnLoading.style.display = 'inline-flex';
 
             try {
-                // 加密密码
-                const encryptedPassword = await Utils.crypto.encrypt(password);
+                const encryptedPassword = await encryptPassword(password);
                 const res = await Api.auth.register({ email, password: encryptedPassword, nickname });
 
                 // 隐藏loading
@@ -107,13 +157,13 @@
                         window.location.href = '/';
                     }, 500);
                 } else {
-                    Components.toast(res.message || '注册失败');
+                    Components.toast(res.message || '注册失败', 4000);
                 }
             } catch (err) {
                 btn.disabled = false;
                 btnText.style.display = 'inline';
                 btnLoading.style.display = 'none';
-                Components.toast('注册失败，请重试');
+                Components.toast('注册失败，请重试', 4000);
             }
         });
     }

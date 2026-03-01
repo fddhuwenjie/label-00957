@@ -161,13 +161,13 @@ INSERT INTO `categories` (`name`, `icon`, `sort_order`) VALUES
 ('古典', 'icon-classical', 5),
 ('嘻哈', 'icon-hiphop', 6);
 
--- 示例音乐数据（使用公开的示例音频）
+-- 示例音乐数据（使用主题封面和示例音频）
 INSERT INTO `music` (`title`, `artist`, `album`, `category_id`, `cover_url`, `audio_url`, `duration`, `play_count`) VALUES
-('夜曲', '周杰伦', '十一月的肖邦', 1, '/assets/images/cover-default.svg', '/assets/audio/sample1.mp3', 269, 1520),
-('光年之外', '邓紫棋', '光年之外', 1, '/assets/images/cover-default.svg', '/assets/audio/sample2.mp3', 235, 2340),
-('平凡之路', '朴树', '猎户星座', 3, '/assets/images/cover-default.svg', '/assets/audio/sample3.mp3', 302, 1890),
-('海阔天空', 'Beyond', '乐与怒', 2, '/assets/images/cover-default.svg', '/assets/audio/sample4.mp3', 326, 3210),
-('成都', '赵雷', '无法长大', 3, '/assets/images/cover-default.svg', '/assets/audio/sample5.mp3', 328, 2780),
-('Faded', 'Alan Walker', 'Different World', 4, '/assets/images/cover-default.svg', '/assets/audio/sample6.mp3', 212, 4520);
+('夜曲', '周杰伦', '十一月的肖邦', 1, '/assets/covers/nightcurve.svg', '/assets/audio/sample1.mp3', 269, 1520),
+('光年之外', '邓紫棋', '光年之外', 1, '/assets/covers/lightyears.svg', '/assets/audio/sample2.mp3', 235, 2340),
+('平凡之路', '朴树', '猎户星座', 3, '/assets/covers/ordinary-road.svg', '/assets/audio/sample3.mp3', 302, 1890),
+('海阔天空', 'Beyond', '乐与怒', 2, '/assets/covers/boundless-sky.svg', '/assets/audio/sample4.mp3', 326, 3210),
+('成都', '赵雷', '无法长大', 3, '/assets/covers/chengdu.svg', '/assets/audio/sample5.mp3', 328, 2780),
+('Faded', 'Alan Walker', 'Different World', 4, '/assets/covers/faded.svg', '/assets/audio/sample6.mp3', 212, 4520);
 
 SET FOREIGN_KEY_CHECKS = 1;

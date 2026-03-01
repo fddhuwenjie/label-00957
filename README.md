@@ -2,14 +2,62 @@
 
 ## How to Run
 
-```bash
-# 1. 克隆项目后进入目录
-cd music-platform
+### Docker 一键部署（推荐）
 
-# 2. 启动服务
+```bash
+
+# 1. 启动所有服务
 docker-compose up -d --build
 
 # 3. 访问地址
+# 前端用户端: http://localhost:8081
+# 后台管理端: http://localhost:8082
+```
+
+### 本地开发运行
+
+数据库通过 Docker 启动，PHP 应用本地直接运行，无需将整个项目容器化。
+
+**环境要求：**
+- PHP >= 8.1，需开启扩展：`pdo_mysql`、`gd`、`zip`、`opcache`
+- Composer 2
+- Docker（仅用于启动 MySQL）
+
+```bash
+# 1. 用 Docker 启动 MySQL 数据库（映射到本机 3307 端口）
+docker-compose up -d mysql
+```
+
+```bash
+# 2. 配置并启动用户端（终端一）
+cd frontend-user
+
+# 复制环境配置，数据库连接指向本机 3307 端口
+cp .env.example .env
+# 编辑 .env：
+# DB_HOST = 127.0.0.1
+# DB_PORT = 3307
+# DB_DATABASE = music_platform
+# DB_USERNAME = root
+# DB_PASSWORD = root123
+
+composer install
+php think run --port 8081
+```
+
+```bash
+# 3. 配置并启动后台管理端（终端二）
+cd frontend-admin
+
+cp .env.example .env
+# 编辑 .env（同上，DB_PORT = 3307）
+
+composer install
+php think run --port 8082
+```
+
+```
+# 4. 访问地址
 # 前端用户端: http://localhost:8081
 # 后台管理端: http://localhost:8082
 ```

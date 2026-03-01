@@ -322,7 +322,7 @@
             },
             "time": "2026-01-15T02:45:10+00:00",
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "files": [],
                 "psr-4": {
@@ -702,6 +702,6 @@
             "install-path": "../topthink/think-view"
         }
     ],
-    "dev": false,
+    "dev": true,
     "dev-package-names": []
 }

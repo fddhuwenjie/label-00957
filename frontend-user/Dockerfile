@@ -53,14 +53,10 @@ RUN chown -R www-data:www-data /var/www/html \
     && mkdir -p runtime public/uploads \
     && chmod -R 777 runtime public/uploads
 
-# 创建启动脚本
-RUN echo '#!/bin/bash\n\
-if [ ! -f /var/www/html/vendor/autoload.php ]; then\n\
-    cp -r /var/www/vendor-backup/* /var/www/html/vendor/\n\
-fi\n\
-apache2-foreground' > /usr/local/bin/start.sh \
-    && chmod +x /usr/local/bin/start.sh
+# 复制并设置启动脚本
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 80
 
-CMD ["/usr/local/bin/start.sh"]
+CMD ["/usr/local/bin/docker-entrypoint.sh"]

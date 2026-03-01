@@ -6,14 +6,14 @@
 return [
     'default' => env('DB_CONNECTION', 'mysql'),
     'connections' => [
-        // MySQL 配置
+        // MySQL 配置（Docker 环境变量优先，避免 volume 挂载 .env 导致 DB_HOST=127.0.0.1 无法连接 mysql 容器）
         'mysql' => [
             'type' => 'mysql',
-            'hostname' => env('DB_HOST', '127.0.0.1'),
-            'database' => env('DB_DATABASE', 'music_platform'),
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
-            'hostport' => env('DB_PORT', '3306'),
+            'hostname' => getenv('DB_HOST') ?: env('DB_HOST', '127.0.0.1'),
+            'database' => getenv('DB_DATABASE') ?: env('DB_DATABASE', 'music_platform'),
+            'username' => getenv('DB_USERNAME') ?: env('DB_USERNAME', 'root'),
+            'password' => (getenv('DB_PASSWORD') !== false ? getenv('DB_PASSWORD') : env('DB_PASSWORD', '')),
+            'hostport' => getenv('DB_PORT') ?: env('DB_PORT', '3306'),
             'charset' => 'utf8mb4',
             'prefix' => '',
             'debug' => env('APP_DEBUG', false),

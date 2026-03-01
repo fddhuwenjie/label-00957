@@ -27,7 +27,10 @@
         <div class="user-area">
             <a href="/user" class="user-logged">
                 <img src="/assets/images/avatar-default.svg" alt="头像" class="user-avatar" id="userAvatar">
-                <span class="user-name pc-only" id="userName"></span>
+                <div class="user-info-text pc-only">
+                    <span class="user-name" id="userName"></span>
+                    <span class="user-email" id="userEmail"></span>
+                </div>
             </a>
             <div class="user-guest">
                 <a href="/login" class="btn btn-text">登录</a>

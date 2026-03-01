@@ -51,7 +51,12 @@
         }
 
         Components.loading.show();
+        const startTime = Date.now();
         const res = await Api.user.favorites({ page: 1, limit: 50 });
+        const elapsed = Date.now() - startTime;
+        if (elapsed < 300) {
+            await new Promise(r => setTimeout(r, 300 - elapsed));
+        }
         Components.loading.hide();
 
         if (res.code === 200) {
@@ -111,7 +116,12 @@
         }
 
         Components.loading.show();
+        const startTime = Date.now();
         const res = await Api.user.history({ page: 1, limit: 50 });
+        const elapsed = Date.now() - startTime;
+        if (elapsed < 300) {
+            await new Promise(r => setTimeout(r, 300 - elapsed));
+        }
         Components.loading.hide();
 
         if (res.code === 200) {
@@ -198,7 +208,12 @@
         }
 
         Components.loading.show();
+        const startTime = Date.now();
         const res = await Api.user.updateProfile({ nickname });
+        const elapsed = Date.now() - startTime;
+        if (elapsed < 300) {
+            await new Promise(r => setTimeout(r, 300 - elapsed));
+        }
         Components.loading.hide();
 
         if (res.code === 200) {

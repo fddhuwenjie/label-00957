@@ -22,7 +22,6 @@
             const grid = document.getElementById('recommendGrid');
             if (grid) {
                 grid.innerHTML = res.data.map(m => Components.renderMusicCard(m)).join('');
-                // 设置播放列表
                 Store.player.setPlaylist(res.data);
             }
         }
@@ -70,10 +69,7 @@
             showSlide(currentIndex);
         }
 
-        // 初始化
         showSlide(0);
-        
-        // 自动轮播
         setInterval(nextSlide, 5000);
     }
 

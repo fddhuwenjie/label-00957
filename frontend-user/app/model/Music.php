@@ -43,16 +43,40 @@ class Music extends Model
     }
 
     /**
+     * 将 admin 上传的相对路径补全为完整 URL
+     */
+    private static function resolveUploadUrl(string $value): string
+    {
+        // /uploads/ 开头的文件存放在 admin 端，需要补全 admin 域名
+        if (str_starts_with($value, '/uploads/')) {
+            $adminUrl = rtrim(env('ADMIN_URL', 'http://localhost:8082'), '/');
+            return $adminUrl . $value;
+        }
+        return $value;
+    }
+
+    /**
      * 获取封面URL - 确保返回有效的封面路径
      */
     public function getCoverUrlAttr($value): string
     {
-        // 如果为空，返回默认封面
         if (empty($value)) {
             return self::DEFAULT_COVER;
         }
-        
-        return $value;
+
+        return self::resolveUploadUrl($value);
+    }
+
+    /**
+     * 获取音频URL - 将 admin 上传路径补全为完整 URL
+     */
+    public function getAudioUrlAttr($value): string
+    {
+        if (empty($value)) {
+            return $value;
+        }
+
+        return self::resolveUploadUrl($value);
     }
 
     /**

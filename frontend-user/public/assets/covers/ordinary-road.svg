@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- 平凡之路 - 朴树 - 公路旅行主题 -->
+  <defs>
+    <linearGradient id="sky3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB"/>
+      <stop offset="60%" style="stop-color:#f4a460"/>
+      <stop offset="100%" style="stop-color:#daa520"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#sky3)"/>
+  <!-- 太阳 -->
+  <circle cx="100" cy="85" r="22" fill="#ff8c00" opacity="0.8"/>
+  <circle cx="100" cy="85" r="18" fill="#ffd700" opacity="0.9"/>
+  <!-- 远山 -->
+  <polygon points="0,130 40,100 80,125 120,95 160,120 200,105 200,150 0,150" fill="#8B7355" opacity="0.5"/>
+  <polygon points="0,140 50,115 100,135 150,110 200,130 200,155 0,155" fill="#6B5B45" opacity="0.6"/>
+  <!-- 地面 -->
+  <rect x="0" y="145" width="200" height="55" fill="#c2a66b"/>
+  <!-- 公路 -->
+  <polygon points="80,200 120,200 108,145 92,145" fill="#555"/>
+  <!-- 路中线 -->
+  <line x1="100" y1="150" x2="100" y2="160" stroke="#fff" stroke-width="2" stroke-dasharray="4,4"/>
+  <line x1="100" y1="165" x2="100" y2="175" stroke="#fff" stroke-width="2" stroke-dasharray="4,4"/>
+  <line x1="100" y1="180" x2="100" y2="190" stroke="#fff" stroke-width="2.5" stroke-dasharray="4,4"/>
+  <!-- 电线杆 -->
+  <line x1="155" y1="100" x2="155" y2="155" stroke="#4a3728" stroke-width="2"/>
+  <line x1="145" y1="105" x2="165" y2="105" stroke="#4a3728" stroke-width="1.5"/>
+</svg>

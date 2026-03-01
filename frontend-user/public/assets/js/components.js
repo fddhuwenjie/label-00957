@@ -20,6 +20,20 @@ const Components = {
         hide() {
             const el = document.getElementById('loading');
             if (el) el.classList.remove('show');
+        },
+        // 包装异步操作，保证最小300ms的loading效果
+        async wrap(asyncFn) {
+            this.show();
+            const startTime = Date.now();
+            try {
+                return await asyncFn();
+            } finally {
+                const elapsed = Date.now() - startTime;
+                if (elapsed < 300) {
+                    await new Promise(r => setTimeout(r, 300 - elapsed));
+                }
+                this.hide();
+            }
         }
     },
 

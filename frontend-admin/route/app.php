@@ -25,9 +25,11 @@ Route::group('api', function () {
         Route::get('/music/list', 'api.MusicController/list');
         Route::get('/music/detail', 'api.MusicController/detail');
         Route::post('/music/create', 'api.MusicController/create');
-        Route::put('/music/update/:id', 'api.MusicController/update');
+        Route::post('/music/update/:id', 'api.MusicController/update');
         Route::delete('/music/delete/:id', 'api.MusicController/delete');
         Route::put('/music/status/:id', 'api.MusicController/updateStatus');
+        Route::post('/music/upload-audio', 'api.MusicController/uploadAudio');
+        Route::post('/music/upload-cover', 'api.MusicController/uploadCover');
 
         // 分类管理
         Route::get('/category/list', 'api.CategoryController/list');

@@ -1,5 +1,5 @@
-<!-- 移动端底部导航 -->
-<nav class="tabbar mobile-only">
+<!-- 移动端底部导航（已隐藏） -->
+<nav class="tabbar mobile-only" style="display:none!important">
     <a href="/" class="tabbar-item {$pageId=='home'?'active':''}">
         <svg class="tabbar-icon" viewBox="0 0 24 24" fill="currentColor">
             <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
