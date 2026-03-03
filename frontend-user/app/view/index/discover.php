@@ -23,10 +23,8 @@
             <!-- 动态加载 -->
         </div>
 
-        <!-- 加载更多 -->
-        <div class="load-more" id="loadMore">
-            <button class="btn btn-outline" id="loadMoreBtn">加载更多</button>
-        </div>
+        <!-- 分页 -->
+        <div class="pagination-bar" id="discoverPagination"></div>
     </div>
 </div>
 {/block}

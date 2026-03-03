@@ -5,9 +5,9 @@
     'use strict';
 
     let currentPage = 1;
+    let totalPages = 1;
     let currentKeyword = '';
     let isLoading = false;
-    let hasMore = true;
 
     const elements = {
         input: document.getElementById('searchInput'),
@@ -20,19 +20,15 @@
         results: document.getElementById('searchResults'),
         resultsList: document.getElementById('resultsList'),
         resultsCount: document.getElementById('resultsCount'),
-        loadMore: document.getElementById('loadMore'),
-        loadMoreBtn: document.getElementById('loadMoreBtn')
+        pagination: document.getElementById('searchPagination')
     };
 
     // 执行搜索
-    async function doSearch(keyword, reset = true) {
+    async function doSearch(keyword, page) {
         if (!keyword.trim()) return;
 
         currentKeyword = keyword.trim();
-        if (reset) {
-            currentPage = 1;
-            hasMore = true;
-        }
+        currentPage = page || 1;
 
         if (isLoading) return;
         isLoading = true;
@@ -46,41 +42,41 @@
         elements.searchHistory.style.display = 'none';
         elements.results.style.display = 'block';
 
-        // 搜索按钮添加loading状态
+        // 搜索按钮 loading
         elements.searchBtn?.classList.add('loading');
-        
-        // 添加300ms loading延迟
         await new Promise(resolve => setTimeout(resolve, 300));
-        
+
         const res = await Api.music.search({
             keyword: currentKeyword,
             page: currentPage,
             limit: 20
         });
-        
-        // 移除loading状态
+
         elements.searchBtn?.classList.remove('loading');
         isLoading = false;
 
         if (res.code === 200) {
             const data = res.data.data || res.data;
             const total = res.data.total || data.length;
+            totalPages = Math.ceil(total / 20) || 1;
 
             elements.resultsCount.textContent = total;
-
-            if (reset) {
-                elements.resultsList.innerHTML = '';
-            }
+            elements.resultsList.innerHTML = '';
 
             if (data.length > 0) {
-                elements.resultsList.innerHTML += data.map(m => Components.renderMusicListItem(m)).join('');
+                elements.resultsList.innerHTML = data.map(m => Components.renderMusicListItem(m)).join('');
                 Store.player.setPlaylist(data);
-            } else if (reset) {
+            } else {
                 elements.resultsList.innerHTML = '<div class="empty-state"><p>未找到相关音乐</p></div>';
             }
 
-            hasMore = data.length >= 20;
-            elements.loadMore.style.display = hasMore ? 'block' : 'none';
+            // 渲染分页
+            Components.mountPagination('searchPagination', currentPage, totalPages, (p) => doSearch(currentKeyword, p), total);
+
+            // 翻页时滚动到结果顶部
+            if (page > 1) {
+                window.scrollTo({ top: elements.results.offsetTop - 80, behavior: 'smooth' });
+            }
         }
     }
 
@@ -88,7 +84,7 @@
     function renderHistory() {
         const list = Store.searchHistory.list;
         if (list.length > 0) {
-            elements.historyTags.innerHTML = list.map(k => 
+            elements.historyTags.innerHTML = list.map(k =>
                 `<span class="history-tag">${k}</span>`
             ).join('');
             elements.searchHistory.style.display = 'block';
@@ -102,54 +98,41 @@
         elements.input.value = '';
         elements.results.style.display = 'none';
         elements.hotSearch.style.display = 'block';
+        if (elements.pagination) elements.pagination.innerHTML = '';
         renderHistory();
     }
 
     // 绑定事件
     function bindEvents() {
-        // 搜索按钮
         elements.searchBtn?.addEventListener('click', () => {
-            doSearch(elements.input.value);
+            doSearch(elements.input.value, 1);
         });
 
-        // 回车搜索
         elements.input?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                doSearch(elements.input.value);
-            }
+            if (e.key === 'Enter') doSearch(elements.input.value, 1);
         });
 
-        // 清空输入
         elements.clearBtn?.addEventListener('click', resetSearch);
 
-        // 热门搜索标签
         document.getElementById('hotSearchTags')?.addEventListener('click', (e) => {
             const tag = e.target.closest('.hot-tag');
             if (tag) {
                 elements.input.value = tag.textContent;
-                doSearch(tag.textContent);
+                doSearch(tag.textContent, 1);
             }
         });
 
-        // 历史搜索标签
         elements.historyTags?.addEventListener('click', (e) => {
             const tag = e.target.closest('.history-tag');
             if (tag) {
                 elements.input.value = tag.textContent;
-                doSearch(tag.textContent);
+                doSearch(tag.textContent, 1);
             }
         });
 
-        // 清空历史
         elements.clearHistory?.addEventListener('click', () => {
             Store.searchHistory.clear();
             renderHistory();
-        });
-
-        // 加载更多
-        elements.loadMoreBtn?.addEventListener('click', () => {
-            currentPage++;
-            doSearch(currentKeyword, false);
         });
     }
 
@@ -158,11 +141,10 @@
         renderHistory();
         bindEvents();
 
-        // 检查URL参数
         const keyword = Utils.getQueryParam('keyword');
         if (keyword) {
             elements.input.value = keyword;
-            doSearch(keyword);
+            doSearch(keyword, 1);
         }
     }
 

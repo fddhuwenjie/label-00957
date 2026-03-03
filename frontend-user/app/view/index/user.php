@@ -51,6 +51,7 @@
                         <p>暂无收藏</p>
                     </div>
                 </div>
+                <div class="pagination-bar" id="favoritesPagination"></div>
             </div>
 
             <!-- 播放历史 -->
@@ -64,6 +65,7 @@
                         <p>暂无播放记录</p>
                     </div>
                 </div>
+                <div class="pagination-bar" id="historyPagination"></div>
             </div>
         </div>
     </div>

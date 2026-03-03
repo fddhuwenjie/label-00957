@@ -9,7 +9,23 @@ class CategoryController extends BaseController
 {
     public function list()
     {
-        $list = Category::order('sort_order', 'asc')->select();
+        $page = input('page', 1, 'intval');
+        $limit = input('limit', 20, 'intval');
+        $keyword = input('keyword', '', 'trim');
+
+        $query = Category::order('sort_order', 'asc');
+
+        if ($keyword) {
+            $query->whereLike('name', "%{$keyword}%");
+        }
+
+        // page=0 时返回全量（供下拉选择框使用）
+        if ($page <= 0) {
+            $list = $query->select();
+            return success($list);
+        }
+
+        $list = $query->paginate(['page' => $page, 'list_rows' => $limit]);
         return success($list);
     }
 

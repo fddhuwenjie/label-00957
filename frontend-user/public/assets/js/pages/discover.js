@@ -5,10 +5,9 @@
     'use strict';
 
     let currentPage = 1;
+    let totalPages = 1;
     let currentCategory = 0;
-    let currentSort = 'new';
     let isLoading = false;
-    let hasMore = true;
 
     // 加载分类
     async function loadCategories() {
@@ -23,14 +22,10 @@
     }
 
     // 加载音乐列表
-    async function loadMusic(reset = false) {
+    async function loadMusic(page) {
         if (isLoading) return;
         isLoading = true;
-
-        if (reset) {
-            currentPage = 1;
-            hasMore = true;
-        }
+        currentPage = page || 1;
 
         Components.loading.show();
         const startTime = Date.now();
@@ -49,29 +44,24 @@
         if (res.code === 200) {
             const list = document.getElementById('musicList');
             const data = res.data.data || res.data;
-            
-            if (reset) {
-                list.innerHTML = '';
-            }
+            const total = res.data.total || data.length;
+            totalPages = Math.ceil(total / 20) || 1;
 
+            list.innerHTML = '';
             if (data.length > 0) {
-                list.innerHTML += data.map(m => Components.renderMusicListItem(m)).join('');
+                list.innerHTML = data.map(m => Components.renderMusicListItem(m)).join('');
                 Store.player.setPlaylist(data);
-            } else if (reset) {
+            } else {
                 list.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg><p>暂无相关音乐</p></div>';
             }
 
-            hasMore = data.length >= 20;
-            updateLoadMore();
-        }
-    }
+            // 渲染分页
+            Components.mountPagination('discoverPagination', currentPage, totalPages, loadMusic, total);
 
-    // 更新加载更多按钮
-    function updateLoadMore() {
-        const loadMore = document.getElementById('loadMore');
-        const btn = document.getElementById('loadMoreBtn');
-        if (loadMore && btn) {
-            loadMore.style.display = hasMore ? 'block' : 'none';
+            // 跳回顶部
+            if (page > 1) {
+                window.scrollTo({ top: document.getElementById('musicList').offsetTop - 80, behavior: 'smooth' });
+            }
         }
     }
 
@@ -84,7 +74,7 @@
                 document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 currentCategory = parseInt(tab.dataset.id) || 0;
-                loadMusic(true);
+                loadMusic(1);
             }
         });
 
@@ -93,28 +83,20 @@
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                currentSort = btn.dataset.sort;
-                loadMusic(true);
+                loadMusic(1);
             });
-        });
-
-        // 加载更多
-        document.getElementById('loadMoreBtn')?.addEventListener('click', () => {
-            currentPage++;
-            loadMusic();
         });
     }
 
     // 初始化
     async function init() {
-        // 检查URL参数
         const urlCategory = Utils.getQueryParam('category');
         if (urlCategory) {
             currentCategory = parseInt(urlCategory);
         }
 
         await loadCategories();
-        await loadMusic(true);
+        await loadMusic(1);
         bindEvents();
 
         // 高亮当前分类

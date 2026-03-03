@@ -192,18 +192,125 @@ body {
 .status-success { background: #d1fae5; color: #065f46; }
 .status-danger { background: #fee2e2; color: #991b1b; }
 
-/* 分页 */
-.pagination { display: flex; gap: 8px; margin-top: 20px; justify-content: center; }
-
-.page-btn {
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    background: white;
-    border-radius: 6px;
-    cursor: pointer;
+/* ======== 分页组件 ======== */
+.pagination {
+    padding: 16px 0 4px;
 }
 
-.page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+.pagination-wrap {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    justify-content: center !important;
+}
+
+/* 总条数 */
+.pag-total {
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    margin-right: 4px;
+}
+.pag-total strong { color: var(--text); font-weight: 600; }
+
+/* 导航组（含首/上/页码/下/末） */
+.pag-nav-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+/* 页码行 */
+.pag-pages {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+/* 通用按钮 */
+.pag-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    user-select: none;
+}
+.pag-btn:hover:not([disabled]) {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(99,102,241,0.06);
+}
+.pag-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+}
+.pag-btn[disabled] {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+/* 首/上/下/末 图标按钮 */
+.pag-btn.pag-nav { font-size: 10px; min-width: 32px; }
+
+/* 省略号 */
+.pag-ellipsis {
+    color: #9ca3af;
+    font-size: 14px;
+    letter-spacing: 2px;
+    padding: 0 2px;
+    line-height: 32px;
+}
+
+/* 第 X/Y 页 */
+.pag-page-info {
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+.pag-page-info strong { color: var(--primary); font-weight: 700; }
+
+/* 跳转 */
+.pag-goto {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+.pag-goto-input {
+    width: 48px;
+    height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    text-align: center;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    -moz-appearance: textfield;
+}
+.pag-goto-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(99,102,241,0.15);
+}
+.pag-goto-input::-webkit-outer-spin-button,
+.pag-goto-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
 /* 模态框 */
 .modal {
@@ -403,6 +510,28 @@ body {
     .main { margin-left: 0; }
     .menu-toggle { display: block; }
     .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* 表格空数据提示 */
+.table-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 0;
+    color: var(--text-muted);
+    gap: 10px;
+}
+
+.table-empty-icon {
+    font-size: 40px;
+    opacity: 0.35;
+    line-height: 1;
+}
+
+.table-empty-text {
+    font-size: 14px;
+    color: var(--text-muted);
 }
 
 /* 表格加载动画 */

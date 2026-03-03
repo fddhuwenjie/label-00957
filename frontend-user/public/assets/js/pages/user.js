@@ -43,16 +43,17 @@
         }
     }
 
-    // 加载收藏列表
-    async function loadFavorites() {
+    // 加载收藏列表（带分页）
+    async function loadFavorites(page) {
         if (!Store.user.isLoggedIn) {
             elements.favoritesList.innerHTML = '<div class="empty-state"><p>请先登录</p></div>';
+            document.getElementById('favoritesPagination').innerHTML = '';
             return;
         }
 
         Components.loading.show();
         const startTime = Date.now();
-        const res = await Api.user.favorites({ page: 1, limit: 50 });
+        const res = await Api.user.favorites({ page: page || 1, limit: 20 });
         const elapsed = Date.now() - startTime;
         if (elapsed < 300) {
             await new Promise(r => setTimeout(r, 300 - elapsed));
@@ -61,17 +62,17 @@
 
         if (res.code === 200) {
             const data = res.data.data || res.data || [];
-            elements.favoritesCount.textContent = data.length;
+            const total = res.data.total || data.length;
+            const totalPages = Math.ceil(total / 20) || 1;
+            elements.favoritesCount.textContent = total;
 
             if (data.length > 0) {
-                // 更新收藏缓存
                 if (window.FavoriteCache) {
                     data.forEach(f => {
                         const musicId = f.music_id || f.music?.id;
                         if (musicId) window.FavoriteCache.add(musicId);
                     });
                 }
-                
                 elements.favoritesList.innerHTML = data.map(f => {
                     if (!f.music) return '';
                     return renderFavoriteItem(f.music);
@@ -79,6 +80,8 @@
             } else {
                 elements.favoritesList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg><p>暂无收藏</p></div>';
             }
+
+            Components.mountPagination('favoritesPagination', page || 1, totalPages, loadFavorites, total);
         } else {
             Components.toast(res.message || '加载失败');
         }
@@ -108,16 +111,17 @@
         `;
     }
 
-    // 加载播放历史
-    async function loadHistory() {
+    // 加载播放历史（带分页）
+    async function loadHistory(page) {
         if (!Store.user.isLoggedIn) {
             elements.historyList.innerHTML = '<div class="empty-state"><p>请先登录</p></div>';
+            document.getElementById('historyPagination').innerHTML = '';
             return;
         }
 
         Components.loading.show();
         const startTime = Date.now();
-        const res = await Api.user.history({ page: 1, limit: 50 });
+        const res = await Api.user.history({ page: page || 1, limit: 20 });
         const elapsed = Date.now() - startTime;
         if (elapsed < 300) {
             await new Promise(r => setTimeout(r, 300 - elapsed));
@@ -126,7 +130,9 @@
 
         if (res.code === 200) {
             const data = res.data.data || res.data || [];
-            elements.historyCount.textContent = data.length;
+            const total = res.data.total || data.length;
+            const totalPages = Math.ceil(total / 20) || 1;
+            elements.historyCount.textContent = total;
 
             if (data.length > 0) {
                 elements.historyList.innerHTML = data.map(h => {
@@ -136,6 +142,8 @@
             } else {
                 elements.historyList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg><p>暂无播放记录</p></div>';
             }
+
+            Components.mountPagination('historyPagination', page || 1, totalPages, loadHistory, total);
         } else {
             Components.toast(res.message || '加载失败');
         }

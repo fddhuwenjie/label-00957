@@ -73,9 +73,8 @@
             <div class="music-list" id="resultsList">
                 <!-- 动态加载 -->
             </div>
-            <div class="load-more" id="loadMore" style="display:none;">
-                <button class="btn btn-outline" id="loadMoreBtn">加载更多</button>
-            </div>
+            <!-- 分页 -->
+            <div class="pagination-bar" id="searchPagination"></div>
         </div>
     </div>
 </div>

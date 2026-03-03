@@ -108,6 +108,117 @@ const Components = {
         `;
     },
 
+    /**
+     * 挂载完整分页组件
+     * @param {string}   containerId  - 容器元素 ID
+     * @param {number}   current      - 当前页码（从 1 开始）
+     * @param {number}   totalPages   - 总页数
+     * @param {Function} onChange     - 翻页回调 onChange(page)
+     * @param {number}   [totalRecords] - 总记录数（可选，显示"共 N 条"）
+     */
+    mountPagination(containerId, current, totalPages, onChange, totalRecords) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+
+        // 总条数
+        if (totalRecords !== undefined) {
+            const totalEl = document.createElement('span');
+            totalEl.className = 'pag-total';
+            totalEl.innerHTML = `共 <strong>${totalRecords}</strong> 条`;
+            container.appendChild(totalEl);
+        }
+
+        if (totalPages <= 1) return;
+
+        // ── 导航区 ──
+        const navGroup = document.createElement('div');
+        navGroup.className = 'pag-nav-group';
+
+        const mkBtn = (html, title, page, disabled) => {
+            const btn = document.createElement('button');
+            btn.className = 'page-btn' + (title ? ' pag-nav' : '');
+            btn.innerHTML = html;
+            if (title) btn.title = title;
+            btn.disabled = !!disabled;
+            if (!disabled) btn.addEventListener('click', () => onChange(page));
+            return btn;
+        };
+
+        // 首页
+        navGroup.appendChild(mkBtn('|◀', '首页', 1, current <= 1));
+        // 上一页
+        navGroup.appendChild(mkBtn('◀', '上一页', current - 1, current <= 1));
+
+        // ── 页码区 ──
+        const pagesEl = document.createElement('div');
+        pagesEl.className = 'pag-pages';
+
+        const addPage = (p) => {
+            const btn = document.createElement('button');
+            btn.className = 'page-btn' + (p === current ? ' active' : '');
+            btn.textContent = p;
+            btn.addEventListener('click', () => onChange(p));
+            pagesEl.appendChild(btn);
+        };
+        const addEllipsis = () => {
+            const span = document.createElement('span');
+            span.className = 'pag-ellipsis';
+            span.textContent = '···';
+            pagesEl.appendChild(span);
+        };
+
+        if (totalPages <= 7) {
+            for (let i = 1; i <= totalPages; i++) addPage(i);
+        } else {
+            addPage(1);
+            if (current > 4) addEllipsis();
+            const start = Math.max(2, current - 2);
+            const end = Math.min(totalPages - 1, current + 2);
+            for (let i = start; i <= end; i++) addPage(i);
+            if (current < totalPages - 3) addEllipsis();
+            addPage(totalPages);
+        }
+
+        navGroup.appendChild(pagesEl);
+
+        // 下一页
+        navGroup.appendChild(mkBtn('▶', '下一页', current + 1, current >= totalPages));
+        // 末页
+        navGroup.appendChild(mkBtn('▶|', '末页', totalPages, current >= totalPages));
+
+        container.appendChild(navGroup);
+
+        // ── 页码信息 ──
+        const infoEl = document.createElement('span');
+        infoEl.className = 'pag-page-info';
+        infoEl.innerHTML = `第 <strong>${current}</strong>/<strong>${totalPages}</strong> 页`;
+        container.appendChild(infoEl);
+
+        // ── 跳转输入框 ──
+        const gotoEl = document.createElement('span');
+        gotoEl.className = 'pag-goto';
+        const gotoInput = document.createElement('input');
+        gotoInput.type = 'number';
+        gotoInput.className = 'pag-goto-input';
+        gotoInput.min = 1;
+        gotoInput.max = totalPages;
+        gotoInput.placeholder = current;
+        gotoInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const p = parseInt(gotoInput.value);
+                if (p >= 1 && p <= totalPages) {
+                    onChange(p);
+                    gotoInput.value = '';
+                }
+            }
+        });
+        gotoEl.appendChild(document.createTextNode('跳至 '));
+        gotoEl.appendChild(gotoInput);
+        gotoEl.appendChild(document.createTextNode(' 页'));
+        container.appendChild(gotoEl);
+    },
+
     // 渲染排行榜项
     renderRankingItem(music, index) {
         const defaultCover = '/assets/images/cover-default.svg';

@@ -977,3 +977,155 @@
     padding: var(--spacing-sm) var(--spacing-md);
     border-top: 1px solid var(--border-color);
 }
+
+/* ========== 分页组件 ========== */
+.pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: var(--spacing-lg) 0 var(--spacing-xl);
+}
+
+/* 总条数 */
+.pagination-bar .pag-total {
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    margin-right: 4px;
+}
+.pagination-bar .pag-total strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* 导航分组（首/上/下/末 + 页码） */
+.pagination-bar .pag-nav-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 页码列表 */
+.pagination-bar .pag-pages {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 所有按钮基础样式 */
+.pagination-bar .page-btn {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    line-height: 1;
+    user-select: none;
+}
+.pagination-bar .page-btn:hover:not(:disabled) {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: var(--primary-bg);
+}
+.pagination-bar .page-btn.active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(99,102,241,0.35);
+}
+.pagination-bar .page-btn:disabled {
+    opacity: 0.32;
+    cursor: not-allowed;
+}
+/* 首/上/下/末 图标按钮 */
+.pagination-bar .page-btn.pag-nav {
+    min-width: 34px;
+    font-size: 11px;
+    letter-spacing: 0;
+}
+
+/* 省略号 */
+.pagination-bar .pag-ellipsis {
+    color: var(--text-muted);
+    padding: 0 2px;
+    font-size: 14px;
+    letter-spacing: 2px;
+    line-height: 34px;
+}
+
+/* 第 X/Y 页 */
+.pagination-bar .pag-page-info {
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+.pagination-bar .pag-page-info strong {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* 跳转输入 */
+.pagination-bar .pag-goto {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+.pagination-bar .pag-goto-input {
+    width: 46px;
+    height: 34px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-size: 13px;
+    outline: none;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    -moz-appearance: textfield;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+.pagination-bar .pag-goto-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(99,102,241,0.15);
+}
+.pagination-bar .pag-goto-input::-webkit-outer-spin-button,
+.pagination-bar .pag-goto-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+    .pagination-bar {
+        gap: 6px;
+        padding: var(--spacing-md) 0 var(--spacing-lg);
+    }
+    .pagination-bar .page-btn {
+        min-width: 30px;
+        height: 30px;
+        font-size: 12px;
+        padding: 0 6px;
+    }
+    .pagination-bar .pag-goto-input {
+        width: 40px;
+        height: 30px;
+    }
+    .pagination-bar .pag-total,
+    .pagination-bar .pag-page-info {
+        font-size: 12px;
+    }
+}

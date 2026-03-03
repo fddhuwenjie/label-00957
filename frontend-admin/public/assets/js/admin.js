@@ -7,6 +7,13 @@
     const API_BASE = '/api';
     let currentPage = 'dashboard';
 
+    // 各列表页状态
+    const _state = {
+        music: { page: 1, keyword: '' },
+        user:  { page: 1, keyword: '' },
+        log:   { page: 1 }
+    };
+
     // API请求
     async function api(url, options = {}) {
         const token = localStorage.getItem('admin_token');
@@ -156,14 +163,14 @@
                         <div class="card-header"><span class="card-title">最新音乐</span></div>
                         <table class="table">
                             <thead><tr><th>标题</th><th>歌手</th></tr></thead>
-                            <tbody>${(recent.data || []).map(m => `<tr><td>${m.title}</td><td>${m.artist}</td></tr>`).join('')}</tbody>
+                            <tbody>${(recent.data || []).length ? (recent.data || []).map(m => `<tr><td>${m.title}</td><td>${m.artist}</td></tr>`).join('') : emptyRow(2)}</tbody>
                         </table>
                     </div>
                     <div class="card">
                         <div class="card-header"><span class="card-title">热门音乐</span></div>
                         <table class="table">
                             <thead><tr><th>标题</th><th>播放量</th></tr></thead>
-                            <tbody>${(top.data || []).map(m => `<tr><td>${m.title}</td><td>${formatNumber(m.play_count)}</td></tr>`).join('')}</tbody>
+                            <tbody>${(top.data || []).length ? (top.data || []).map(m => `<tr><td>${m.title}</td><td>${formatNumber(m.play_count)}</td></tr>`).join('') : emptyRow(2)}</tbody>
                         </table>
                     </div>
                 </div>
@@ -171,13 +178,16 @@
         },
 
         async music() {
+            _state.music.page = 1;
+            _state.music.keyword = '';
             const res = await get('/music/list', { page: 1, limit: 20 });
-            const cats = await get('/category/list');
+            const cats = await get('/category/list', { page: 0 });
             const list = res.data?.data || res.data || [];
+            const total = res.data?.total || list.length;
+            const totalPages = Math.ceil(total / 20) || 1;
             const categories = cats.data || [];
 
             window._categories = categories;
-            window._musicList = list;
 
             return `
                 <h2 style="margin-bottom:20px">音乐管理</h2>
@@ -193,85 +203,78 @@
                         <thead><tr><th>ID</th><th>标题</th><th>歌手</th><th>分类</th><th>播放量</th><th>状态</th><th>操作</th></tr></thead>
                         <tbody id="musicTable">${renderMusicRows(list)}</tbody>
                     </table>
+                    <div class="pagination" id="musicPagination">${renderPagination(1, totalPages, 'loadMusicPage', total)}</div>
                 </div>
             `;
         },
 
         async category() {
-            const res = await get('/category/list');
-            const list = res.data || [];
+            const res = await get('/category/list', { page: 1, limit: 20 });
+            const list = res.data?.data || res.data || [];
+            const total = res.data?.total || list.length;
+            const perPage = res.data?.per_page || 20;
+            const totalPages = Math.ceil(total / perPage);
 
             return `
                 <h2 style="margin-bottom:20px">分类管理</h2>
                 <div class="toolbar">
+                    <div class="search-box">
+                        <input type="text" class="search-input" id="categorySearch" placeholder="搜索分类">
+                        <button class="btn btn-outline" onclick="searchCategory()">搜索</button>
+                    </div>
                     <button class="btn btn-primary" onclick="showCategoryForm()">+ 新增分类</button>
                 </div>
                 <div class="card">
                     <table class="table">
                         <thead><tr><th>ID</th><th>名称</th><th>排序</th><th>状态</th><th>操作</th></tr></thead>
-                        <tbody id="categoryTable">${list.map(c => `
-                            <tr>
-                                <td>${c.id}</td>
-                                <td>${c.name}</td>
-                                <td>${c.sort_order}</td>
-                                <td><span class="status ${c.status === 1 ? 'status-success' : 'status-danger'}">${c.status === 1 ? '启用' : '禁用'}</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline" onclick="editCategory(${c.id}, '${c.name}', ${c.sort_order}, ${c.status})">编辑</button>
-                                    <button class="btn btn-sm btn-danger" onclick="deleteCategory(${c.id})">删除</button>
-                                </td>
-                            </tr>
-                        `).join('')}</tbody>
+                        <tbody id="categoryTable">${renderCategoryRows(list)}</tbody>
                     </table>
+                    <div class="pagination" id="categoryPagination">${renderPagination(1, totalPages, 'loadCategoryPage', total)}</div>
                 </div>
             `;
         },
 
         async user() {
+            _state.user.page = 1;
+            _state.user.keyword = '';
             const res = await get('/user/list', { page: 1, limit: 20 });
             const list = res.data?.data || res.data || [];
+            const total = res.data?.total || list.length;
+            const totalPages = Math.ceil(total / 20) || 1;
 
             return `
                 <h2 style="margin-bottom:20px">用户管理</h2>
+                <div class="toolbar">
+                    <div class="search-box">
+                        <input type="text" class="search-input" id="userSearch" placeholder="搜索用户邮箱/昵称">
+                        <button class="btn btn-outline" onclick="searchUser()">搜索</button>
+                    </div>
+                </div>
                 <div class="card">
                     <table class="table">
                         <thead><tr><th>ID</th><th>邮箱</th><th>昵称</th><th>状态</th><th>注册时间</th><th>操作</th></tr></thead>
-                        <tbody>${list.map(u => `
-                            <tr>
-                                <td>${u.id}</td>
-                                <td>${u.email}</td>
-                                <td>${u.nickname || '-'}</td>
-                                <td><span class="status ${u.status === 1 ? 'status-success' : 'status-danger'}">${u.status === 1 ? '正常' : '禁用'}</span></td>
-                                <td>${u.created_at || '-'}</td>
-                                <td>
-                                    <button class="btn btn-sm ${u.status === 1 ? 'btn-danger' : 'btn-primary'}" onclick="toggleUserStatus(${u.id}, ${u.status === 1 ? 0 : 1})">${u.status === 1 ? '禁用' : '启用'}</button>
-                                </td>
-                            </tr>
-                        `).join('')}</tbody>
+                        <tbody id="userTable">${renderUserRows(list)}</tbody>
                     </table>
+                    <div class="pagination" id="userPagination">${renderPagination(1, totalPages, 'loadUserPage', total)}</div>
                 </div>
             `;
         },
 
         async log() {
-            const res = await get('/log/list', { page: 1, limit: 50 });
+            _state.log.page = 1;
+            const res = await get('/log/list', { page: 1, limit: 20 });
             const list = res.data?.data || res.data || [];
+            const total = res.data?.total || list.length;
+            const totalPages = Math.ceil(total / 20) || 1;
 
             return `
                 <h2 style="margin-bottom:20px">操作日志</h2>
                 <div class="card">
                     <table class="table">
                         <thead><tr><th>时间</th><th>管理员</th><th>模块</th><th>操作</th><th>内容</th><th>IP</th></tr></thead>
-                        <tbody>${list.map(l => `
-                            <tr>
-                                <td>${l.created_at}</td>
-                                <td>${l.admin?.nickname || l.admin?.username || '-'}</td>
-                                <td>${l.module}</td>
-                                <td>${l.action}</td>
-                                <td>${l.content || '-'}</td>
-                                <td>${l.ip || '-'}</td>
-                            </tr>
-                        `).join('')}</tbody>
+                        <tbody id="logTable">${renderLogRows(list)}</tbody>
                     </table>
+                    <div class="pagination" id="logPagination">${renderPagination(1, totalPages, 'loadLogPage', total)}</div>
                 </div>
             `;
         }
@@ -282,7 +285,42 @@
         return n >= 10000 ? (n / 10000).toFixed(1) + '万' : n;
     }
 
+    function emptyRow(colspan) {
+        return `<tr><td colspan="${colspan}"><div class="table-empty"><div class="table-empty-icon">📭</div><div class="table-empty-text">暂无数据</div></div></td></tr>`;
+    }
+
+    function renderUserRows(list) {
+        if (!list || !list.length) return emptyRow(6);
+        return list.map(u => `
+            <tr>
+                <td>${u.id}</td>
+                <td>${u.email}</td>
+                <td>${u.nickname || '-'}</td>
+                <td><span class="status ${u.status === 1 ? 'status-success' : 'status-danger'}">${u.status === 1 ? '正常' : '禁用'}</span></td>
+                <td>${u.created_at || '-'}</td>
+                <td>
+                    <button class="btn btn-sm ${u.status === 1 ? 'btn-danger' : 'btn-primary'}" onclick="toggleUserStatus(${u.id}, ${u.status === 1 ? 0 : 1})">${u.status === 1 ? '禁用' : '启用'}</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderLogRows(list) {
+        if (!list || !list.length) return emptyRow(6);
+        return list.map(l => `
+            <tr>
+                <td>${l.created_at}</td>
+                <td>${l.admin?.nickname || l.admin?.username || '-'}</td>
+                <td>${l.module}</td>
+                <td>${l.action}</td>
+                <td>${l.content || '-'}</td>
+                <td>${l.ip || '-'}</td>
+            </tr>
+        `).join('');
+    }
+
     function renderMusicRows(list) {
+        if (!list || !list.length) return emptyRow(7);
         return list.map(m => `
             <tr>
                 <td>${m.id}</td>
@@ -532,21 +570,60 @@
     window.toggleMusicStatus = async function(id, status) {
         const res = await put(`/music/status/${id}`, { status });
         toast(res.message || '操作成功');
-        loadPage('music');
+        await loadMusicPage(_state.music.page);
     };
 
     window.searchMusic = async function() {
-        const keyword = document.getElementById('musicSearch').value;
+        const keyword = document.getElementById('musicSearch')?.value || '';
+        _state.music.keyword = keyword;
+        _state.music.page = 1;
+        await loadMusicPage(1);
+    };
+
+    window.loadMusicPage = async function(page) {
+        _state.music.page = page;
         const table = document.getElementById('musicTable');
-        table.innerHTML = '<tr><td colspan="7"><div class="table-loading"><div class="table-loading-spinner"></div><span>搜索中...</span></div></td></tr>';
-        const startTime = Date.now();
-        const res = await get('/music/list', { keyword, page: 1, limit: 20 });
-        const elapsed = Date.now() - startTime;
-        if (elapsed < 300) {
-            await new Promise(r => setTimeout(r, 300 - elapsed));
-        }
+        if (table) table.innerHTML = '<tr><td colspan="7"><div class="table-loading"><div class="table-loading-spinner"></div><span>加载中...</span></div></td></tr>';
+        const res = await get('/music/list', { keyword: _state.music.keyword, page, limit: 20 });
         const list = res.data?.data || res.data || [];
-        table.innerHTML = renderMusicRows(list);
+        const total = res.data?.total || list.length;
+        const totalPages = Math.ceil(total / 20) || 1;
+        if (table) table.innerHTML = renderMusicRows(list);
+        const pag = document.getElementById('musicPagination');
+        if (pag) pag.innerHTML = renderPagination(page, totalPages, 'loadMusicPage', total);
+    };
+
+    window.searchUser = async function() {
+        const keyword = document.getElementById('userSearch')?.value || '';
+        _state.user.keyword = keyword;
+        _state.user.page = 1;
+        await loadUserPage(1);
+    };
+
+    window.loadUserPage = async function(page) {
+        _state.user.page = page;
+        const table = document.getElementById('userTable');
+        if (table) table.innerHTML = '<tr><td colspan="6"><div class="table-loading"><div class="table-loading-spinner"></div><span>加载中...</span></div></td></tr>';
+        const res = await get('/user/list', { keyword: _state.user.keyword, page, limit: 20 });
+        const list = res.data?.data || res.data || [];
+        const total = res.data?.total || list.length;
+        const totalPages = Math.ceil(total / 20) || 1;
+        if (table) table.innerHTML = renderUserRows(list);
+        const pag = document.getElementById('userPagination');
+        if (pag) pag.innerHTML = renderPagination(page, totalPages, 'loadUserPage', total);
+    };
+
+    window.loadLogPage = async function(page) {
+        _state.log.page = page;
+        const table = document.getElementById('logTable');
+        if (table) table.innerHTML = '<tr><td colspan="6"><div class="table-loading"><div class="table-loading-spinner"></div><span>加载中...</span></div></td></tr>';
+        const res = await get('/log/list', { page, limit: 20 });
+        const list = res.data?.data || res.data || [];
+        const total = res.data?.total || list.length;
+        const totalPages = Math.ceil(total / 20) || 1;
+        if (table) table.innerHTML = renderLogRows(list);
+        const pag = document.getElementById('logPagination');
+        if (pag) pag.innerHTML = renderPagination(page, totalPages, 'loadLogPage', total);
     };
 
     // 分类操作
@@ -603,11 +680,114 @@
         loadPage('category');
     };
 
+    /**
+     * 渲染完整分页组件（返回 HTML 字符串）
+     * @param {number} currentPg   当前页
+     * @param {number} totalPages  总页数
+     * @param {string} handler     全局函数名，handler(page) 形式
+     * @param {number} [total]     总记录数（可选）
+     */
+    function renderPagination(currentPg, totalPages, handler, total) {
+        if (totalPages <= 0) return '';
+
+        const totalStr = total !== undefined
+            ? `<span class="pag-total">共 <strong>${total}</strong> 条记录</span>` : '';
+
+        const fd = currentPg <= 1 ? 'disabled' : '';
+        const ld = currentPg >= totalPages ? 'disabled' : '';
+        const fo = currentPg > 1 ? `onclick="${handler}(1)"` : '';
+        const po = currentPg > 1 ? `onclick="${handler}(${currentPg - 1})"` : '';
+        const no = currentPg < totalPages ? `onclick="${handler}(${currentPg + 1})"` : '';
+        const lo = currentPg < totalPages ? `onclick="${handler}(${totalPages})"` : '';
+
+        // 页码
+        let nums = '';
+                  const addBtn = (p) => {
+                      nums += `<button class="pag-btn${p === currentPg ? ' active' : ''}" onclick="${handler}(${p})" style="display:inline-flex;align-items:center;justify-content:center;">${p}</button>`;
+                  };
+                  const addDot = () => { nums += `<span class="pag-ellipsis" style="padding:0 2px;color:#999;">···</span>`; };
+
+        if (totalPages <= 7) {
+            for (let i = 1; i <= totalPages; i++) addBtn(i);
+        } else {
+            addBtn(1);
+            if (currentPg > 4) addDot();
+            const s = Math.max(2, currentPg - 2);
+            const e = Math.min(totalPages - 1, currentPg + 2);
+            for (let i = s; i <= e; i++) addBtn(i);
+            if (currentPg < totalPages - 3) addDot();
+            addBtn(totalPages);
+        }
+
+        const pageInfo = `<span class="pag-page-info">第 <strong>${currentPg}</strong>/<strong>${totalPages}</strong> 页</span>`;
+        const gotoInput = `<span class="pag-goto">跳至<input class="pag-goto-input" type="number" min="1" max="${totalPages}" placeholder="${currentPg}" onkeydown="if(event.key==='Enter'){var p=parseInt(this.value);if(p>=1&&p<=${totalPages}){${handler}(p);this.value='';}}" >页</span>`;
+
+        return `
+        <div class="pagination-wrap" style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;justify-content:center;padding:12px 0;">
+            ${totalStr}
+            <div class="pag-nav-group" style="display:flex;align-items:center;gap:4px;">
+                <button class="pag-btn pag-nav" title="首页" ${fd} ${fo} style="display:inline-flex;align-items:center;justify-content:center;">|&#9664;</button>
+                <button class="pag-btn pag-nav" title="上一页" ${fd} ${po} style="display:inline-flex;align-items:center;justify-content:center;">&#9664;</button>
+                <div class="pag-pages" style="display:flex;align-items:center;gap:4px;">${nums}</div>
+                <button class="pag-btn pag-nav" title="下一页" ${ld} ${no} style="display:inline-flex;align-items:center;justify-content:center;">&#9654;</button>
+                <button class="pag-btn pag-nav" title="末页" ${ld} ${lo} style="display:inline-flex;align-items:center;justify-content:center;">&#9654;|</button>
+            </div>
+            ${pageInfo}
+            ${gotoInput}
+        </div>`;
+    }
+
+    function renderCategoryRows(list) {
+        if (!list || !list.length) return emptyRow(5);
+        return list.map(c => `
+            <tr>
+                <td>${c.id}</td>
+                <td>${c.name}</td>
+                <td>${c.sort_order}</td>
+                <td><span class="status ${c.status === 1 ? 'status-success' : 'status-danger'}">${c.status === 1 ? '启用' : '禁用'}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-outline" onclick="editCategory(${c.id}, '${c.name}', ${c.sort_order}, ${c.status})">编辑</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteCategory(${c.id})">删除</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // 分类搜索
+    window.searchCategory = async function() {
+        const keyword = document.getElementById('categorySearch')?.value || '';
+        const res = await get('/category/list', { page: 1, limit: 20, keyword });
+        const list = res.data?.data || res.data || [];
+        const total = res.data?.total || list.length;
+        const totalPages = Math.ceil(total / 20);
+        const table = document.getElementById('categoryTable');
+        if (table) {
+            table.innerHTML = renderCategoryRows(list);
+            const pag = document.getElementById('categoryPagination');
+            if (pag) pag.innerHTML = renderPagination(1, totalPages, 'loadCategoryPage', total);
+        }
+    };
+
+    // 分类分页跳转
+    window.loadCategoryPage = async function(page) {
+        const keyword = document.getElementById('categorySearch')?.value || '';
+        const res = await get('/category/list', { page, limit: 20, keyword });
+        const list = res.data?.data || res.data || [];
+        const total = res.data?.total || list.length;
+        const totalPages = Math.ceil(total / 20);
+        const table = document.getElementById('categoryTable');
+        if (table) {
+            table.innerHTML = renderCategoryRows(list);
+            const pag = document.getElementById('categoryPagination');
+            if (pag) pag.innerHTML = renderPagination(page, totalPages, 'loadCategoryPage', total);
+        }
+    };
+
     // 用户操作
     window.toggleUserStatus = async function(id, status) {
         const res = await put(`/user/status/${id}`, { status });
         toast(res.message || '操作成功');
-        loadPage('user');
+        await loadUserPage(_state.user.page);
     };
 
     // 页面加载（最小300ms loading效果）

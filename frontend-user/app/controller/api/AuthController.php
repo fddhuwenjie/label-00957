@@ -104,7 +104,7 @@ class AuthController extends BaseController
         $user = User::where('email', trim($data['email']))->find();
         
         if (!$user || !$user->verifyPassword((string) $password)) {
-            return error('邮箱或密码错误', 401);
+            return error('邮箱或密码错误', 400);
         }
 
         if ($user->status !== 1) {
