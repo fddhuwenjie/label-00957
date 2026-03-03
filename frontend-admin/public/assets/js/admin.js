@@ -286,7 +286,7 @@
     }
 
     function emptyRow(colspan) {
-        return `<tr><td colspan="${colspan}"><div class="table-empty"><div class="table-empty-icon">📭</div><div class="table-empty-text">暂无数据</div></div></td></tr>`;
+        return `<tr><td colspan="${colspan}" class="table-empty-cell">暂无数据</td></tr>`;
     }
 
     function renderUserRows(list) {
