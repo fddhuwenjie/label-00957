@@ -33,15 +33,8 @@ class AssetController extends BaseController
         // CSS压缩处理
         $content = $this->minifyCss($content);
         
-        // 添加缓存头
-        return Response::create($content, 'html', 200)
-            ->header([
-                'Content-Type' => 'text/css; charset=utf-8',
-                'Cache-Control' => 'no-cache, no-store, must-revalidate',
-                'Pragma' => 'no-cache',
-                'Expires' => '0',
-                'X-Content-Type-Options' => 'nosniff'
-            ]);
+        $headers = $this->buildCacheHeaders('text/css; charset=utf-8', $path);
+        return Response::create($content, 'html', 200)->header($headers);
     }
 
     /**
@@ -66,14 +59,26 @@ class AssetController extends BaseController
         // 混淆处理（简单压缩）
         $content = $this->minifyJs($content);
         
-        return Response::create($content, 'html', 200)
-            ->header([
-                'Content-Type' => 'application/javascript; charset=utf-8',
-                'Cache-Control' => 'no-cache, no-store, must-revalidate',
-                'Pragma' => 'no-cache',
-                'Expires' => '0',
-                'X-Content-Type-Options' => 'nosniff'
-            ]);
+        $headers = $this->buildCacheHeaders('application/javascript; charset=utf-8', $path);
+        return Response::create($content, 'html', 200)->header($headers);
+    }
+
+    /**
+     * 构建合理的缓存响应头，基于文件修改时间生成 ETag
+     */
+    private function buildCacheHeaders(string $contentType, string $filePath): array
+    {
+        $mtime = filemtime($filePath);
+        $etag = '"' . md5($filePath . $mtime) . '"';
+
+        return [
+            'Content-Type'        => $contentType,
+            'Cache-Control'       => 'public, max-age=86400',
+            'ETag'                => $etag,
+            'Last-Modified'       => gmdate('D, d M Y H:i:s', $mtime) . ' GMT',
+            'Expires'             => gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT',
+            'X-Content-Type-Options' => 'nosniff',
+        ];
     }
 
     /**

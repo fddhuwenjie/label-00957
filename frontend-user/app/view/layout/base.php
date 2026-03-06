@@ -11,15 +11,29 @@
     <link rel="icon" href="/assets/images/favicon.ico">
     <!-- 动态加载CSS（通过PHP动态引入保护源码） -->
     <?php
-    // 动态加载核心CSS
-    $cssFiles = ['variables', 'base', 'components', 'responsive'];
-    $pageCss = ['home', 'auth', 'user', 'discover', 'ranking', 'search'];
     $cssVersion = '20260216v2';
+    // 核心CSS：所有页面共用
+    $cssFiles = ['variables', 'base', 'components', 'responsive'];
     foreach ($cssFiles as $file) {
         echo '<link rel="stylesheet" href="/asset/css?file=' . $file . '&v=' . $cssVersion . '">' . "\n    ";
     }
-    foreach ($pageCss as $file) {
-        echo '<link rel="stylesheet" href="/asset/css?file=pages/' . $file . '&v=' . $cssVersion . '">' . "\n    ";
+    // 页面CSS：根据当前 pageId 按需加载
+    $currentPage = isset($pageId) ? $pageId : '';
+    $pageCssMap = [
+        'home'     => ['pages/home'],
+        'auth'     => ['pages/auth'],
+        'login'    => ['pages/auth'],
+        'register' => ['pages/auth'],
+        'user'     => ['pages/user'],
+        'profile'  => ['pages/user'],
+        'discover' => ['pages/discover'],
+        'ranking'  => ['pages/ranking'],
+        'search'   => ['pages/search'],
+    ];
+    if (isset($pageCssMap[$currentPage])) {
+        foreach ($pageCssMap[$currentPage] as $file) {
+            echo '<link rel="stylesheet" href="/asset/css?file=' . $file . '&v=' . $cssVersion . '">' . "\n    ";
+        }
     }
     ?>
     {block name="css"}{/block}
