@@ -5,6 +5,9 @@ use think\facade\Route;
 Route::get('/', 'IndexController/index');
 Route::get('/login', 'IndexController/login');
 
+// 健康检查（公开，不走中间件）
+Route::get('/api/health', 'api.HealthController/check');
+
 // API路由
 Route::group('api', function () {
     // 认证（无需登录）
