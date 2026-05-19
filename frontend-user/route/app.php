@@ -21,6 +21,8 @@ Route::get('/asset/js', 'api.AssetController/js');
 
 // API路由
 Route::group('api', function () {
+    Route::get('/health', 'api.HealthController/check');
+
     // 认证
     Route::get('/auth/public-key', 'api.AuthController/publicKey');
     Route::post('/auth/register', 'api.AuthController/register');

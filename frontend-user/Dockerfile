@@ -11,13 +11,15 @@ RUN composer dump-autoload --optimize --no-scripts
 # 运行时镜像
 FROM php:8.2-apache
 
-# 安装 PHP 扩展
+# 安装 PHP 扩展和健康检查依赖
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
     libzip-dev \
     unzip \
+    curl \
+    procps \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql zip opcache \
     && apt-get clean \
@@ -56,6 +58,39 @@ RUN chown -R www-data:www-data /var/www/html \
 # 复制并设置启动脚本
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# 健康检查脚本
+RUN echo '#!/bin/bash\n\
+set -e\n\
+curl -f http://localhost/api/health || exit 1\n\
+exit 0' > /usr/local/bin/healthcheck.sh \
+    && chmod +x /usr/local/bin/healthcheck.sh
+
+# Nginx 配置验证脚本
+RUN echo '#!/bin/bash\n\
+set -e\n\
+if [ -f /etc/apache2/apache2.conf ]; then\n\
+    apache2ctl configtest || exit 1\n\
+    echo "Apache configuration is valid"\n\
+else\n\
+    echo "No Apache config found"\n\
+fi\n\
+exit 0' > /usr/local/bin/check-config.sh \
+    && chmod +x /usr/local/bin/check-config.sh
+
+# 优雅停机脚本
+RUN echo '#!/bin/bash\n\
+echo "Graceful shutdown initiated..."\n\
+apache2ctl graceful-stop\n\
+sleep 3\n\
+echo "Graceful shutdown completed"\n\
+exit 0' > /usr/local/bin/graceful-stop.sh \
+    && chmod +x /usr/local/bin/graceful-stop.sh
+
+STOPSIGNAL SIGWINCH
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD /usr/local/bin/healthcheck.sh
 
 EXPOSE 80
 
