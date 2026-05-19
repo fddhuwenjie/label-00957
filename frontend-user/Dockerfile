@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libzip-dev \
     unzip \
+    curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql zip opcache \
     && apt-get clean \
@@ -58,5 +59,10 @@ COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=5 --start-period=30s \
+    CMD curl -f -s -o /dev/null http://localhost/api/health || exit 1
+
+STOPSIGNAL SIGTERM
 
 CMD ["/usr/local/bin/docker-entrypoint.sh"]

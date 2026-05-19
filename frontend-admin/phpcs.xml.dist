@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset name="Music Platform Admin"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+    <description>PSR-12 coding standard for Music Platform Admin End</description>
+
+    <file>app/</file>
+
+    <exclude-pattern>app/view/</exclude-pattern>
+    <exclude-pattern>vendor/</exclude-pattern>
+    <exclude-pattern>runtime/</exclude-pattern>
+    <exclude-pattern>public/assets/</exclude-pattern>
+
+    <arg name="standard" value="PSR12"/>
+    <arg name="tabWidth" value="4"/>
+    <arg name="encoding" value="UTF-8"/>
+</ruleset>
