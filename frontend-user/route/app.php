@@ -32,6 +32,9 @@ Route::group('api', function () {
         return json(['code' => 200, 'data' => []]);
     });
     
+    // 健康检查（公开）
+    Route::get('/health', 'HealthController/check');
+
     // 音乐（公开）
     Route::get('/music/list', 'api.MusicController/list');
     Route::get('/music/detail', 'api.MusicController/detail');

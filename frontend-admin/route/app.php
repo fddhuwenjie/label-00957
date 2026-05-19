@@ -11,6 +11,9 @@ Route::group('api', function () {
     Route::get('/auth/public-key', 'api.AuthController/publicKey');
     Route::post('/auth/login', 'api.AuthController/login');
 
+    // 健康检查（公开）
+    Route::get('/health', 'HealthController/check');
+
     // 需要登录的API
     Route::group('', function () {
         Route::post('/auth/logout', 'api.AuthController/logout');
