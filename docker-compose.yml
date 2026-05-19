@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # 用户端 - 多端合一响应式
   frontend-user:
     build:
       context: ./frontend-user
@@ -22,11 +21,17 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=root123
       - ADMIN_URL=http://localhost:8082
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     networks:
       - music-network
     restart: unless-stopped
+    stop_grace_period: 30s
 
-  # 后台管理端
   frontend-admin:
     build:
       context: ./frontend-admin
@@ -46,11 +51,17 @@ services:
       - DB_DATABASE=music_platform
       - DB_USERNAME=root
       - DB_PASSWORD=root123
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     networks:
       - music-network
     restart: unless-stopped
+    stop_grace_period: 30s
 
-  # MySQL 数据库
   mysql:
     image: mysql:8.0
     platform: linux/amd64
@@ -70,9 +81,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
     networks:
       - music-network
     restart: unless-stopped
+    stop_grace_period: 60s
 
 networks:
   music-network:
